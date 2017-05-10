@@ -77,7 +77,7 @@ inline LD ld_modulo(LD a, LD b){
   return x;
 }
 
-inline LD ld_nan() {
+inline LD ld_nan() t{
   return (LD) {.u = 0x7fff8000000000000000000000000000LL };
 }
 
