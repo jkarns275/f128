@@ -3,7 +3,7 @@ name = "f128"
 version = "0.1.0"
 authors = ["Joshua Karns <jkarns275@gmail.com>"]
 build = "build.rs"
-description = "A macro to minimize error checking code"
+description = "Bindings to the gcc software implemented f128 types, and native long doubles."
 license = "MIT"
 
 [dependencies]
