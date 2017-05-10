@@ -1,0 +1,14 @@
+[package]
+name = "f128"
+version = "0.1.0"
+authors = ["Joshua Karns <jkarns275@gmail.com>"]
+build = "build.rs"
+
+[dependencies]
+
+[build-dependencies]
+gcc = "0.3"
+
+[[bin]]
+name = "bin"
+path = "src/lib.rs"
