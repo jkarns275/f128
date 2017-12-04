@@ -4,13 +4,13 @@
 #include <stdint.h>
 #include <math.h>
 typedef __float128 f128;
-
-
 extern int quadmath_snprintf (char *s, size_t size, const char *format, ...);
+
 
 typedef union _Wrapper {
   f128 value;
   unsigned __int128 dat;
+  char dat_alt[16];
 } Wrapper;
 
 Wrapper strtoflt128_f(const char *s) {
@@ -47,6 +47,19 @@ f128_to_x(__int128, i128)
 f128_to_x(size_t, usize)
 f128_to_x(ssize_t, isize)
 
+Wrapper u128_to_f128(unsigned __int128 a) {
+    Wrapper d;
+    d.value = (f128) a;
+    return d;
+}
+
+Wrapper i128_to_f128(__int128 a) {
+    Wrapper d;
+    d.value = (f128) a;
+    return d;
+}
+
+
 x_to_f128(int8_t, i8)
 x_to_f128(int16_t, i16)
 x_to_f128(int32_t, i32)
@@ -57,8 +70,8 @@ x_to_f128(uint32_t, u32)
 x_to_f128(uint64_t, u64)
 x_to_f128(float, f32)
 x_to_f128(double, f64)
-x_to_f128(__int128, i128)
-x_to_f128(unsigned __int128, u128)
+//x_to_f128(__int128, i128)
+//x_to_f128(unsigned __int128, u128)
 x_to_f128(size_t, usize)
 x_to_f128(ssize_t, isize)
 
@@ -206,6 +219,7 @@ inline long long int llrintq_f (Wrapper a) {
 inline long long int llroundq_f (Wrapper a) {
   return llroundq(a.value);
 }
+
 inline Wrapper logbq_f (Wrapper a) {
   return (Wrapper) { logbq(a.value) };
 }
