@@ -13,16 +13,6 @@ mod ffi;
 mod f128_t;
 
 pub use f128_t::f128;
-
-fn main() {
-    let x = 0xfffeffffffffffffffffffffffffffff;
-    let z = 0x7ffeffffffffffffffffffffffffffff_u128;
-    let y: f128 = f128::from_bits(x);
-    let w: f128 = f128::from_bits(z);
-    println!("{}, {}", y.to_string(), w.to_string());
-
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
