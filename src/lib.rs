@@ -6,6 +6,8 @@
 #![feature(concat_idents)]
 #![feature(use_extern_macros)]
 extern crate libc;
+extern crate num;
+
 use std::f64;
 mod ffi;
 mod f128_t;
@@ -13,9 +15,12 @@ mod f128_t;
 pub use f128_t::f128;
 
 fn main() {
-    let mut x = f128::new(123);
-    let a: f128 = f64::NAN.into();
-    println!("{:x}", a.into_inner());
+    let x = 0xfffeffffffffffffffffffffffffffff;
+    let z = 0x7ffeffffffffffffffffffffffffffff_u128;
+    let y: f128 = f128::from_bits(x);
+    let w: f128 = f128::from_bits(z);
+    println!("{}, {}", y.to_string(), w.to_string());
+
 }
 
 #[cfg(test)]
@@ -23,9 +28,7 @@ mod tests {
     use super::*;
     #[test]
     fn it_works() {
-        let x = unsafe { add(0, 0) };
-        println!("{:x}", x);
+        //let x = unsafe { add(0, 0) };
+        //println!("{:x}", x);
     }
 }
-
-
