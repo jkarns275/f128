@@ -4,6 +4,7 @@ version = "0.1.2"
 authors = ["Joshua Karns <jkarns275@gmail.com>"]
 build = "build.rs"
 license = "MIT"
+description = "Bindings to the gcc quadmath library"
 
 [dependencies]
 num = "0.1"
