@@ -6,7 +6,6 @@
 typedef __float128 f128;
 extern int quadmath_snprintf (char *s, size_t size, const char *format, ...);
 
-
 typedef union _Wrapper {
   f128 value;
   unsigned __int128 dat;

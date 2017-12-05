@@ -2,8 +2,6 @@ use libc::c_int;
 use libc::c_longlong;
 use f128_t::f128;
 
-
-#[link_args = "-lquadmath"]
 #[link(name = "f128", kind = "static")]
 extern "C" {
     // Elementary methods

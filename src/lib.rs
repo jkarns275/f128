@@ -11,8 +11,11 @@ extern crate num;
 use std::f64;
 mod ffi;
 mod f128_t;
+mod f128_derive;
 
 pub use f128_t::f128;
+pub use f128_derive::*;
+
 #[cfg(test)]
 mod tests {
     use super::*;
