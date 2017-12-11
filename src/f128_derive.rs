@@ -9,6 +9,9 @@ use std::mem;
 use std::slice;
 use std::ffi::CString;
 use num::*;
+use std::cmp::*;
+use std::cmp::Ordering::*;
+
 
 macro_rules! impl_to_16 {
     ($t:ty) => {
@@ -168,7 +171,6 @@ shl_assign_impl! {f128, i64 }
 shl_assign_impl! {f128, i128 }
 shl_assign_impl! {f128, isize }
 
-
 impl Add for f128 {
     type Output = f128;
 
@@ -309,17 +311,6 @@ impl Hash for f128 {
     }
 }
 
-impl Bounded for f128 {
-    fn min_value() -> f128 {
-        f128::from_arr( unsafe { mem::transmute::<u128, [u8; 16]>(0x7ffeffffffffffffffffffffffffffff) })
-
-    }
-
-    fn max_value() -> f128 {
-        f128::from_arr(unsafe { mem::transmute::<u128, [u8; 16]>(0xfffeffffffffffffffffffffffffffff) })
-    }
-}
-
 macro_rules! impl_from {
     ($($sm: ident)*) => ($(
         impl From<$sm> for f128 {
@@ -398,6 +389,30 @@ macro_rules! into_f128_arr_gen {
 
 into_f128_gen! { u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 }
 into_f128_arr_gen! { i128 u128 }
+
+impl PartialOrd for f128 {
+    fn partial_cmp(&self, other: &f128) -> Option<Ordering> {
+        let lte = unsafe { is_lte(self.into_inner(), other.into_inner()) };
+        let gte = unsafe { is_gte(self.into_inner(), other.into_inner()) };
+
+        match (lte != 0, gte != 0) {
+            (false, false) => None,
+            (false, true) => Some(Greater),
+            (true, false) => Some(Less),
+            (true, true) => Some(Equal),
+        }
+    }
+}
+
+impl PartialEq for f128 {
+    fn eq(&self, other: &Self) -> bool {
+        self.inner() == other.inner()
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        self.inner() != other.inner()
+    }
+}
 
 impl ToPrimitive for f128 {
     fn to_i64(&self)    -> Option<i64> { Some(unsafe { f128_to_i64(self.inner()) }) }

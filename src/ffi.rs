@@ -111,4 +111,12 @@ extern "C" {
     pub fn y0q_f (a: [u8; 16]) -> [u8; 16];
     pub fn y1q_f (a: [u8; 16]) -> [u8; 16];
     pub fn ynq_f (a: c_int, b: [u8; 16]) -> [u8; 16];
+
+    pub fn is_gt(lhs: [u8; 16], rhs: [u8; 16]) -> u8;
+    pub fn is_gte(lhs: [u8; 16], rhs: [u8; 16]) -> u8;
+    pub fn is_eq(lhs: [u8; 16], rhs: [u8; 16]) -> u8;
+    pub fn is_neq(lhs: [u8; 16], rhs: [u8; 16]) -> u8;
+    pub fn is_lt(lhs: [u8; 16], rhs: [u8; 16]) -> u8;
+    pub fn is_lte(lhs: [u8; 16], rhs: [u8; 16]) -> u8;
+
 }

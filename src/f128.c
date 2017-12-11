@@ -27,7 +27,7 @@ Wrapper strtoflt128_f(const char *s) {
     return (x) a;\
 }
 
-int qtostr(char*s, size_t size, const char *format, Wrapper r) {
+int qtostr(char* s, size_t size, const char *format, Wrapper r) {
   return quadmath_snprintf(s, size, format, r.value);
 }
 
@@ -308,4 +308,24 @@ inline Wrapper y1q_f (Wrapper a) {
 }
 inline Wrapper ynq_f(int a, Wrapper b) {
   return (Wrapper) { ynq(a, b.value) };
+}
+
+inline unsigned char gt(Wrapper a, Wrapper b) {
+    return (unsigned char) a.value > b.value;
+}
+
+inline unsigned char gte(Wrapper a, Wrapper b) {
+    return (unsigned char) a.value >= b.value;
+}
+inline unsigned char lt(Wrapper a, Wrapper b) {
+    return (unsigned char) a.value < b.value;
+}
+inline unsigned char lte(Wrapper a, Wrapper b) {
+    return (unsigned char) a.value <= b.value;
+}
+inline unsigned char eq(Wrapper a, Wrapper b) {
+    return (unsigned char) a.value == b.value;
+}
+inline unsigned char neq(Wrapper a, Wrapper b) {
+    return (unsigned char) a.value != b.value;
 }

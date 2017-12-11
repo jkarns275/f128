@@ -9,5 +9,9 @@ description = "Bindings to the gcc quadmath library"
 [dependencies]
 num = "0.1"
 
+[[bin]]
+name='a'
+path='src/lib.rs'
+
 [build-dependencies]
 cc = "1.0"
