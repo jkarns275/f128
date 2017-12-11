@@ -6,6 +6,7 @@
 #![feature(concat_idents)]
 #![feature(use_extern_macros)]
 #![feature(const_fn)]
+#![allow(warnings)]
 extern crate libc;
 extern crate num;
 
