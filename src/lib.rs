@@ -21,24 +21,50 @@ pub use f128_derive::*;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::str::FromStr;
+    use std::num::FpCategory;
     #[test]
-    fn it_works() {
-        //let x = unsafe { add(0, 0) };
-        //println!("{:x}", x);
-        let x = f128::parse("2.71828182845904523536028747135266249775724709369995").unwrap();
-        eprint!("{:?}", x.0);
+    fn test_constants() {
+        let pi = f128::parse("3.1415926535897932384626433832795028841971693993751058").unwrap();
+        let e = f128::parse("2.7182818284590452353602874713526624977572").unwrap();
+        let one = f128::parse("1.0").unwrap();
+        let two = f128::parse("2.0").unwrap();
+
+        // .0 because using actual float comparison won't work, and we're concerned about the bits
+        assert_eq!(pi.0, f128::PI.0);
+        assert_eq!(e.0, f128::E.0);
+        assert_eq!(one.0, f128::ONE.0);
+        assert_eq!(two.0, f128::TWO.0);
+
+        assert!(f128::NAN.is_nan());
+        assert!(!f128::NAN.is_finite());
+        assert!(!f128::NAN.is_infinite());
+
+        assert!(f128::INFINITY.is_infinite());
+        assert!(!f128::INFINITY.is_finite());
+
+        assert!(f128::NEG_INFINITY.is_infinite());
+        assert!(!f128::NEG_INFINITY.is_finite());
+
+    }
+
+    #[test]
+    fn test_classify() {
+        let pi = f128::PI;
+        let one = f128::ONE;
+        let half = f128::parse("0.5").unwrap();
+        let zero = f128::from_u8(0);
+        let other = -zero;
+        let min = f128::MIN_POSITIVE;
+
+        assert_eq!(half.classify(), FpCategory::Normal);
+        assert_eq!(one.classify(), FpCategory::Normal);
+        assert_eq!(pi.classify(), FpCategory::Normal);
+        assert_eq!(min.classify(), FpCategory::Subnormal);
+        assert_eq!(f128::INFINITY.classify(), FpCategory::Infinite);
+        assert_eq!(f128::NEG_INFINITY.classify(), FpCategory::Infinite);
+        assert_eq!(f128::NAN.classify(), FpCategory::Nan);
 
     }
 }
 
-fn main() {
-    use num::FromPrimitive;
-
-    let a = f128::PI;
-
-    let b = a*f128::from_i8(5).unwrap();
-
-    let c = b / f128::from_i8(5).unwrap();
-
-    println!("{} == {}; {}", a.to_string(), c.to_string(), b.to_string());
-}

@@ -11,7 +11,28 @@ use std::ffi::CString;
 use num::*;
 use std::cmp::*;
 use std::cmp::Ordering::*;
+use std::fmt::{Debug, Formatter, Error};
 
+impl Debug for f128 {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
+        f.write_str(&self.to_string())
+    }
+}
+
+impl Neg for f128 {
+    type Output = Self;
+    #[cfg(target_endian = "little")]
+    fn neg(mut self) -> Self {
+        self.0[15] ^= 0x8;
+        self
+    }
+
+    #[cfg(target_endian = "big")]
+    fn neg(mut self) -> Self {
+        self.0[0] ^= 0x8;
+        self
+    }
+}
 
 macro_rules! impl_to_16 {
     ($t:ty) => {
@@ -392,8 +413,8 @@ into_f128_arr_gen! { i128 u128 }
 
 impl PartialOrd for f128 {
     fn partial_cmp(&self, other: &f128) -> Option<Ordering> {
-        let lte = unsafe { is_lte(self.into_inner(), other.into_inner()) };
-        let gte = unsafe { is_gte(self.into_inner(), other.into_inner()) };
+        let lte = unsafe { lteq(self.into_inner(), other.into_inner()) };
+        let gte = unsafe { gteq(self.into_inner(), other.into_inner()) };
 
         match (lte != 0, gte != 0) {
             (false, false) => None,
@@ -406,40 +427,11 @@ impl PartialOrd for f128 {
 
 impl PartialEq for f128 {
     fn eq(&self, other: &Self) -> bool {
-        self.inner() == other.inner()
+        unsafe { eqq(self.0, other.0) != 0 }
     }
 
     fn ne(&self, other: &Self) -> bool {
-        self.inner() != other.inner()
+        unsafe { neqq(self.0, other.0) != 0 }
     }
 }
 
-impl ToPrimitive for f128 {
-    fn to_i64(&self)    -> Option<i64> { Some(unsafe { f128_to_i64(self.inner()) }) }
-    fn to_u64(&self)    -> Option<u64> { Some(unsafe { f128_to_u64(self.inner()) }) }
-    fn to_isize(&self)  -> Option<isize> { Some(unsafe { f128_to_i64(self.inner()) as isize }) }
-    fn to_i8(&self)     -> Option<i8> { Some(unsafe { f128_to_i8(self.inner()) }) }
-    fn to_i16(&self)    -> Option<i16> { Some(unsafe { f128_to_i16(self.inner()) }) }
-    fn to_i32(&self)    -> Option<i32> { Some(unsafe { f128_to_i32(self.inner()) }) }
-    fn to_usize(&self)  -> Option<usize> { Some(unsafe { f128_to_u64(self.inner()) as usize }) }
-    fn to_u8(&self)     -> Option<u8> { Some(unsafe { f128_to_u8(self.inner()) }) }
-    fn to_u16(&self)    -> Option<u16> { Some(unsafe { f128_to_u16(self.inner()) }) }
-    fn to_u32(&self)    -> Option<u32> { Some(unsafe { f128_to_u32(self.inner()) }) }
-    fn to_f32(&self)    -> Option<f32> { Some(unsafe { f128_to_f32(self.inner()) }) }
-    fn to_f64(&self)    -> Option<f64> { Some(unsafe { f128_to_f64(self.inner()) }) }
-}
-
-impl FromPrimitive for f128 {
-    fn from_i64(n: i64) -> Option<Self> { Some(unsafe { f128::from_arr(i64_to_f128(n)) }) }
-    fn from_u64(n: u64) -> Option<Self> { Some(unsafe { f128::from_arr(u64_to_f128(n)) }) }
-    fn from_isize(n: isize) -> Option<Self> { Some(unsafe { f128::from_arr(i64_to_f128(n as i64)) })}
-    fn from_i8(n: i8) -> Option<Self> { Some(unsafe { f128::from_arr(i8_to_f128(n)) }) }
-    fn from_i16(n: i16) -> Option<Self> { Some(unsafe { f128::from_arr(i16_to_f128(n)) }) }
-    fn from_i32(n: i32) -> Option<Self> { Some(unsafe { f128::from_arr(i32_to_f128(n)) }) }
-    fn from_usize(n: usize) -> Option<Self> { Some(unsafe { f128::from_arr(u64_to_f128(n as u64)) }) }
-    fn from_u8(n: u8) -> Option<Self> { Some(unsafe { f128::from_arr(u8_to_f128(n)) }) }
-    fn from_u16(n: u16) -> Option<Self> { Some(unsafe { f128::from_arr(u16_to_f128(n)) }) }
-    fn from_u32(n: u32) -> Option<Self> { Some(unsafe { f128::from_arr(u32_to_f128(n)) }) }
-    fn from_f32(n: f32) -> Option<Self> { Some(unsafe { f128::from_arr(f32_to_f128(n)) }) }
-    fn from_f64(n: f64) -> Option<Self> { Some(unsafe { f128::from_arr(f64_to_f128(n)) }) }
-}

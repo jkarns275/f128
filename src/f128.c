@@ -13,7 +13,6 @@ typedef union _Wrapper {
 } Wrapper;
 
 Wrapper strtoflt128_f(const char *s) {
-  char ** sp;
   return (Wrapper) { strtoflt128(s, NULL) };
 }
 
@@ -310,22 +309,22 @@ inline Wrapper ynq_f(int a, Wrapper b) {
   return (Wrapper) { ynq(a, b.value) };
 }
 
-inline unsigned char gt(Wrapper a, Wrapper b) {
+unsigned char gtq(Wrapper a, Wrapper b) {
     return (unsigned char) a.value > b.value;
 }
 
-inline unsigned char gte(Wrapper a, Wrapper b) {
+unsigned char gteq(Wrapper a, Wrapper b) {
     return (unsigned char) a.value >= b.value;
 }
-inline unsigned char lt(Wrapper a, Wrapper b) {
+unsigned char ltq(Wrapper a, Wrapper b) {
     return (unsigned char) a.value < b.value;
 }
-inline unsigned char lte(Wrapper a, Wrapper b) {
+unsigned char lteq(Wrapper a, Wrapper b) {
     return (unsigned char) a.value <= b.value;
 }
-inline unsigned char eq(Wrapper a, Wrapper b) {
+unsigned char eqq(Wrapper a, Wrapper b) {
     return (unsigned char) a.value == b.value;
 }
-inline unsigned char neq(Wrapper a, Wrapper b) {
+unsigned char neqq(Wrapper a, Wrapper b) {
     return (unsigned char) a.value != b.value;
 }
