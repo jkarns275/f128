@@ -1,7 +1,6 @@
 #![feature(link_args)]
 #![feature(i128_type)]
 #![feature(i128)]
-#![feature(zero_one)]
 #![feature(libc)]
 #![feature(concat_idents)]
 #![feature(use_extern_macros)]
