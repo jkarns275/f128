@@ -22,6 +22,8 @@ mod tests {
     use super::*;
     use std::str::FromStr;
     use std::num::FpCategory;
+    use num_traits::*;
+
     #[test]
     fn test_constants() {
         let pi = f128::parse("3.1415926535897932384626433832795028841971693993751058").unwrap();
@@ -52,7 +54,7 @@ mod tests {
         let pi = f128::PI;
         let one = f128::ONE;
         let half = f128::parse("0.5").unwrap();
-        let zero = f128::from_u8(0);
+        let zero = f128::from_u8(0).unwrap();
         let other = -zero;
         let min = f128::MIN_POSITIVE;
 
@@ -66,17 +68,23 @@ mod tests {
     }
 
     #[test]
+    fn test_f128_to_primitive() {
+        let a = f128::parse("1003.0").unwrap();
+        assert!(1003 == a.to_i64().unwrap());
+    }
+
+    #[test]
     fn test_conversions() {
-        assert!(f128::from_u128(123456789).0 == f128::parse("123456789.0").unwrap().0);
-        assert!(f128::from_i128(5i128).0 == f128::parse("5.0").unwrap().0);
-        assert!(f128::from_i64(-64).0 == f128::parse("-64.0").unwrap().0);
-        assert!(f128::from_u64(10_000_000).0 == f128::parse("10000000.0").unwrap().0);
-        assert!(f128::from_i32(5i32).0 == f128::parse("5.0").unwrap().0);
-        assert!(f128::from_u32(0).0 == f128::parse("0.0").unwrap().0);
-        assert!(f128::from_u16(32000).0 == f128::parse("32000.0").unwrap().0);
-        assert!(f128::from_i16(-30000).0 == f128::parse("-30000.0").unwrap().0);
-        assert!(f128::from_i8(-100).0 == f128::parse("-100.0").unwrap().0);
-        assert!(f128::from_u8(255).0 == f128::parse("255.0").unwrap().0);
+        assert!(f128::from_u128(123456789).unwrap().0 == f128::parse("123456789.0").unwrap().0);
+        assert!(f128::from_i128(5i128).unwrap().0 == f128::parse("5.0").unwrap().0);
+        assert!(f128::from_i64(-64).unwrap().0 == f128::parse("-64.0").unwrap().0);
+        assert!(f128::from_u64(10_000_000).unwrap().0 == f128::parse("10000000.0").unwrap().0);
+        assert!(f128::from_i32(5i32).unwrap().0 == f128::parse("5.0").unwrap().0);
+        assert!(f128::from_u32(0).unwrap().0 == f128::parse("0.0").unwrap().0);
+        assert!(f128::from_u16(32000).unwrap().0 == f128::parse("32000.0").unwrap().0);
+        assert!(f128::from_i16(-30000).unwrap().0 == f128::parse("-30000.0").unwrap().0);
+        assert!(f128::from_i8(-100).unwrap().0 == f128::parse("-100.0").unwrap().0);
+        assert!(f128::from_u8(255).unwrap().0 == f128::parse("255.0").unwrap().0);
     }
 }
 

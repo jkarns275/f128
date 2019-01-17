@@ -252,7 +252,7 @@ impl Num for f128 {
 
 impl NumCast for f128 {
     fn from<T: ToPrimitive>(n: T) -> Option<Self> {
-        match NumCast::from(n) {
+        match <f64 as NumCast>::from(n) {
             Some(i) => f128::from_f64(i),
             None => None
         }
