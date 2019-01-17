@@ -22,8 +22,8 @@ Wrapper strtoflt128_f(const char *s) {
     return d;\
 }
 
-#define f128_to_x(x, n) x f128_to_##n(f128 a) {   \
-    return (x) a;\
+#define f128_to_x(x, n) x f128_to_##n(Wrapper a) {   \
+  return (x) a.value;\
 }
 
 int qtostr(char* s, size_t size, const char *format, Wrapper r) {
@@ -73,32 +73,31 @@ x_to_f128(double, f64)
 x_to_f128(size_t, usize)
 x_to_f128(ssize_t, isize)
 
-
-inline Wrapper f128_add(Wrapper a, Wrapper b){
+ Wrapper f128_add(Wrapper a, Wrapper b){
   Wrapper x;
   x.value = a.value + b.value;
   return x;
 }
 
-inline Wrapper f128_sub(Wrapper a, Wrapper b){
+ Wrapper f128_sub(Wrapper a, Wrapper b){
   Wrapper x;
   x.value = a.value - b.value;
   return x;
 }
 
-inline Wrapper f128_mul(Wrapper a, Wrapper b){
+ Wrapper f128_mul(Wrapper a, Wrapper b){
   Wrapper x;
   x.value = a.value * b.value;
   return x;
 }
 
-inline Wrapper f128_div(Wrapper a, Wrapper b){
+ Wrapper f128_div(Wrapper a, Wrapper b){
   Wrapper x;
   x.value = a.value / b.value;
   return x;
 }
 
-inline Wrapper f128_modulo(Wrapper a, Wrapper b){
+ Wrapper f128_modulo(Wrapper a, Wrapper b){
   Wrapper x;
   x.value = fmodq(a.value, b.value);
   return x;
@@ -109,203 +108,203 @@ void f128_to_str(Wrapper a, size_t n, char* buf, const char* format) {
 }
 /* Prototypes for real functions */
 
-inline Wrapper acosq_f(Wrapper a) {
+ Wrapper acosq_f(Wrapper a) {
   return (Wrapper) { acosq(a.value) };
 }
-inline Wrapper acoshq_f(Wrapper a) {
+ Wrapper acoshq_f(Wrapper a) {
   return (Wrapper) { acoshq(a.value) };
 }
-inline Wrapper asinq_f (Wrapper a) {
+ Wrapper asinq_f (Wrapper a) {
   return (Wrapper) { asinq(a.value) };
 }
-inline Wrapper asinhq_f (Wrapper a) {
+ Wrapper asinhq_f (Wrapper a) {
    return (Wrapper) { asinhq(a.value) };
 }
-inline Wrapper atanq_f (Wrapper a) {
+ Wrapper atanq_f (Wrapper a) {
   return (Wrapper) { atanq(a.value) };
 }
-inline Wrapper atanhq_f (Wrapper a) {
+ Wrapper atanhq_f (Wrapper a) {
   return (Wrapper) { atanhq(a.value) };
 }
-inline Wrapper atan2q_f (Wrapper a, Wrapper b) {
+ Wrapper atan2q_f (Wrapper a, Wrapper b) {
   return (Wrapper) { atan2q(a.value, b.value) };
 }
-inline Wrapper cbrtq_f (Wrapper a) {
+ Wrapper cbrtq_f (Wrapper a) {
   return (Wrapper) { cbrtq(a.value) };
 }
-inline Wrapper ceilq_f (Wrapper a) {
+ Wrapper ceilq_f (Wrapper a) {
   return (Wrapper) { ceilq(a.value) };
 }
-inline Wrapper copysignq_f (Wrapper a, Wrapper b) {
+ Wrapper copysignq_f (Wrapper a, Wrapper b) {
   return (Wrapper) { copysignq(a.value, b.value) };
 }
-inline Wrapper coshq_f (Wrapper a) {
+ Wrapper coshq_f (Wrapper a) {
   return (Wrapper) { coshq(a.value) };
 }
-inline Wrapper cosq_f (Wrapper a) {
+ Wrapper cosq_f (Wrapper a) {
   return (Wrapper) { cosq(a.value) };
 }
-inline Wrapper erfq_f (Wrapper a) {
+ Wrapper erfq_f (Wrapper a) {
   return (Wrapper) { erfq(a.value) };
 }
-inline Wrapper erfcq_f (Wrapper a) {
+ Wrapper erfcq_f (Wrapper a) {
   return (Wrapper) { erfcq(a.value) };
 }
-inline Wrapper expq_f (Wrapper a) {
+ Wrapper expq_f (Wrapper a) {
   return (Wrapper) { expq(a.value) };
 }
-inline Wrapper expm1q_f (Wrapper a) {
+ Wrapper expm1q_f (Wrapper a) {
   return (Wrapper) { expm1q(a.value) };
 }
-inline Wrapper fabsq_f (Wrapper a) {
+ Wrapper fabsq_f (Wrapper a) {
   return (Wrapper) { fabsq(a.value) };
 }
-inline Wrapper fdimq_f (Wrapper a, Wrapper b) {
+ Wrapper fdimq_f (Wrapper a, Wrapper b) {
   return (Wrapper) { fdimq(a.value, b.value) };
 }
-inline int finiteq_f (Wrapper a) {
+ int finiteq_f (Wrapper a) {
   return finiteq(a.value);
 }
-inline Wrapper floorq_f (Wrapper a) {
+ Wrapper floorq_f (Wrapper a) {
   return (Wrapper) { floorq(a.value) };
 }
-inline Wrapper fmaq_f (Wrapper a, Wrapper b, Wrapper c) {
+ Wrapper fmaq_f (Wrapper a, Wrapper b, Wrapper c) {
   return (Wrapper) { fmaq(a.value, b.value, c.value) };
 }
-inline Wrapper fmaxq_f (Wrapper a, Wrapper b) {
+ Wrapper fmaxq_f (Wrapper a, Wrapper b) {
   return (Wrapper) { fmaxq(a.value, b.value) };
 }
-inline Wrapper fminq_f (Wrapper a, Wrapper b) {
+ Wrapper fminq_f (Wrapper a, Wrapper b) {
   return (Wrapper) { fminq(a.value, b.value) };
 }
-inline Wrapper fmodq_f (Wrapper a, Wrapper b) {
+ Wrapper fmodq_f (Wrapper a, Wrapper b) {
   return (Wrapper) { fmodq(a.value, b.value) };
 }
-inline Wrapper frexpq_f (Wrapper a, int * b) {
+ Wrapper frexpq_f (Wrapper a, int * b) {
   return (Wrapper) { frexpq(a.value, b) };
 }
-inline Wrapper hypotq_f (Wrapper a, Wrapper b) {
+ Wrapper hypotq_f (Wrapper a, Wrapper b) {
   return (Wrapper) { hypotq(a.value, b.value) };
 }
-inline int isinfq_f (Wrapper a) {
+ int isinfq_f (Wrapper a) {
   return isinfq(a.value);
 }
-inline int ilogbq_f (Wrapper a) {
+ int ilogbq_f (Wrapper a) {
   return ilogbq(a.value);
 }
-inline int isnanq_f (Wrapper a) {
+ int isnanq_f (Wrapper a) {
   return isnanq(a.value);
 }
-inline Wrapper j0q_f (Wrapper a) {
+ Wrapper j0q_f (Wrapper a) {
   return (Wrapper) { j0q(a.value) };
 }
-inline Wrapper j1q_f (Wrapper a) {
+ Wrapper j1q_f (Wrapper a) {
   return (Wrapper) { j1q(a.value) };
 }
-inline Wrapper jnq_f (int a, Wrapper b) {
+ Wrapper jnq_f (int a, Wrapper b) {
   return (Wrapper) { jnq(a, b.value) };
 }
-inline Wrapper ldexpq_f (Wrapper a, int b) {
+ Wrapper ldexpq_f (Wrapper a, int b) {
   return (Wrapper) { ldexpq(a.value, b) };
 }
-inline Wrapper lgammaq_f (Wrapper a) {
+ Wrapper lgammaq_f (Wrapper a) {
   return (Wrapper) { lgammaq(a.value) };
 }
-inline long long int llrintq_f (Wrapper a) {
+ long long int llrintq_f (Wrapper a) {
   return llrintq(a.value);
 }
-inline long long int llroundq_f (Wrapper a) {
+ long long int llroundq_f (Wrapper a) {
   return llroundq(a.value);
 }
 
-inline Wrapper logbq_f (Wrapper a) {
+ Wrapper logbq_f (Wrapper a) {
   return (Wrapper) { logbq(a.value) };
 }
-inline Wrapper logq_f (Wrapper a) {
+ Wrapper logq_f (Wrapper a) {
    return (Wrapper) { logq(a.value) };
 }
-inline Wrapper log10q_f (Wrapper a) {
+ Wrapper log10q_f (Wrapper a) {
   return (Wrapper) { log10q(a.value) };
 }
-inline Wrapper log2q_f (Wrapper a) {
+ Wrapper log2q_f (Wrapper a) {
   return (Wrapper) { log2q(a.value) };
 }
-inline Wrapper log1pq_f (Wrapper a) {
+ Wrapper log1pq_f (Wrapper a) {
   return (Wrapper) { log1pq(a.value) };
 }
-inline long int lrintq_f (Wrapper a) {
+ long int lrintq_f (Wrapper a) {
   return lrintq(a.value);
 }
-inline long int lroundq_f (Wrapper a) {
+ long int lroundq_f (Wrapper a) {
   return lroundq(a.value);
 }
-inline Wrapper modfq_f (Wrapper a, Wrapper * b) {
+ Wrapper modfq_f (Wrapper a, Wrapper * b) {
   return (Wrapper) { modfq(a.value, (f128*) b) };
 }
-inline Wrapper nanq_f (const char * c) {
+ Wrapper nanq_f (const char * c) {
   return (Wrapper) { nanq(c) };
 }
-inline Wrapper nearbyintq_f (Wrapper a) {
+ Wrapper nearbyintq_f (Wrapper a) {
   return (Wrapper) { nearbyintq(a.value) };
 }
-inline Wrapper nextafterq_f (Wrapper a, Wrapper b) {
+ Wrapper nextafterq_f (Wrapper a, Wrapper b) {
   return (Wrapper) { nextafterq(a.value, b.value) };
 }
-inline Wrapper powq_f (Wrapper a, Wrapper b) {
+ Wrapper powq_f (Wrapper a, Wrapper b) {
   return (Wrapper) { powq(a.value, b.value) };
 }
-inline Wrapper remainderq_f (Wrapper a, Wrapper b) {
+ Wrapper remainderq_f (Wrapper a, Wrapper b) {
   return (Wrapper) { remainderq(a.value, b.value) };
 }
-inline Wrapper remquoq_f (Wrapper a, Wrapper b, int * c) {
+ Wrapper remquoq_f (Wrapper a, Wrapper b, int * c) {
   return (Wrapper) { remquoq(a.value, b.value, c) };
 }
-inline Wrapper rintq_f (Wrapper a) {
+ Wrapper rintq_f (Wrapper a) {
   return (Wrapper) { rintq(a.value) };
 }
-inline Wrapper roundq_f (Wrapper a) {
+ Wrapper roundq_f (Wrapper a) {
   return (Wrapper) { roundq(a.value) };
 }
-inline Wrapper scalblnq_f (Wrapper a, long int b) {
+ Wrapper scalblnq_f (Wrapper a, long int b) {
   return (Wrapper) { scalblnq(a.value, b) };
 }
-inline Wrapper scalbnq_f (Wrapper a, int b) {
+ Wrapper scalbnq_f (Wrapper a, int b) {
   return (Wrapper) { scalbnq(a.value, b) };
 }
-inline int signbitq_f (Wrapper a) {
+ int signbitq_f (Wrapper a) {
   return signbitq(a.value);
 }
-inline void sincosq_f (Wrapper a, Wrapper * b, Wrapper * c) {
+ void sincosq_f (Wrapper a, Wrapper * b, Wrapper * c) {
   sincosq(a.value, (f128*) b, (f128*) c);
 }
-inline Wrapper sinhq_f (Wrapper a) {
+ Wrapper sinhq_f (Wrapper a) {
   return (Wrapper) { sinhq(a.value) };
 }
-inline Wrapper sinq_f (Wrapper a) {
+ Wrapper sinq_f (Wrapper a) {
   return (Wrapper) { sinq(a.value) };
 }
-inline Wrapper sqrtq_f (Wrapper a) {
+ Wrapper sqrtq_f (Wrapper a) {
   return (Wrapper) { sqrtq(a.value) };
 }
-inline Wrapper tanq_f (Wrapper a) {
+ Wrapper tanq_f (Wrapper a) {
   return (Wrapper) { tanq(a.value) };
 }
-inline Wrapper tanhq_f (Wrapper a) {
+ Wrapper tanhq_f (Wrapper a) {
   return (Wrapper) { tanhq(a.value) };
 }
-inline Wrapper tgammaq_f (Wrapper a) {
+ Wrapper tgammaq_f (Wrapper a) {
   return (Wrapper) { tgammaq(a.value) };
 }
-inline Wrapper truncq_f (Wrapper a) {
+ Wrapper truncq_f (Wrapper a) {
   return (Wrapper) { truncq(a.value) };
 }
-inline Wrapper y0q_f (Wrapper a) {
+ Wrapper y0q_f (Wrapper a) {
   return (Wrapper) { y0q(a.value) };
 }
-inline Wrapper y1q_f (Wrapper a) {
+ Wrapper y1q_f (Wrapper a) {
   return (Wrapper) { y1q(a.value) };
 }
-inline Wrapper ynq_f(int a, Wrapper b) {
+ Wrapper ynq_f(int a, Wrapper b) {
   return (Wrapper) { ynq(a, b.value) };
 }
 
