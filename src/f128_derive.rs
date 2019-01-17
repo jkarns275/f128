@@ -8,7 +8,6 @@ use std::hash::{ Hash, Hasher };
 use std::mem;
 use std::slice;
 use std::ffi::CString;
-use num::*;
 use std::cmp::*;
 use std::cmp::Ordering::*;
 use std::fmt::{Debug, Formatter, Error};

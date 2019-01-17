@@ -7,7 +7,7 @@
 #![feature(const_fn)]
 #![allow(warnings)]
 extern crate libc;
-extern crate num;
+extern crate num_traits;
 
 use std::f64;
 mod ffi;

@@ -44,7 +44,7 @@ extern "C" {
     pub fn f64_to_f128	(x: f64) -> [u8; 16];
     pub fn f128_to_f64	(x: [u8; 16]) -> f64;
 
-    pub fn acosq(x: [u8; 16]) -> [u8; 16];
+    pub fn acosq_f(x: [u8; 16]) -> [u8; 16];
     pub fn acosn_f (a: [u8; 16]) -> [u8; 16];
     pub fn acoshq_f (a: [u8; 16]) -> [u8; 16];
     pub fn asinq_f (a: [u8; 16]) -> [u8; 16];
