@@ -27,12 +27,6 @@ macro_rules! f128_from_x {
 #[derive(Clone, Copy)]
 pub struct f128(pub(crate) [u8; 16]);
 
-pub trait To16Bytes {
-    fn to_arr(&self) -> [u8; 16];
-    fn to_u128(&self) -> u128;
-    fn to_i128(&self) -> i128;
-}
-
 impl f128 {
     pub const RADIX: u32 = 128;
     pub const MANTISSA_DIGITS: u32 = 112;
@@ -116,11 +110,6 @@ impl f128 {
 
     #[inline(always)]
     pub fn inner_as_u128(&self) -> u128 { unsafe { mem::transmute::<[u8; 16], u128>(self.0) } }
-
-    #[inline(always)]
-    pub fn from_bits<T: To16Bytes>(x: &To16Bytes) -> Self {
-        f128( x.to_arr() )
-    }
 
     #[inline(always)]
     pub fn new<T: Into<f128>>(a: T) -> Self { a.into() }
