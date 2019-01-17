@@ -70,7 +70,7 @@ macro_rules! shl_impl {
 
         #[inline]
         fn shr(self, other: $f) -> f128 {
-            f128::from_bits::<u128>(&(unsafe { mem::transmute::<[u8; 16], u128>(self.inner()) } >> other))
+            unsafe { mem::transmute::<u128, f128>((mem::transmute::<[u8; 16], u128>(self.inner()) >> other)) }
         }
     }
         forward_ref_binop! { impl Shr, shr for $t, $f }
@@ -124,7 +124,7 @@ macro_rules! shl_impl {
 
         #[inline]
         fn shl(self, other: $f) -> $t {
-            f128::from_bits::<u128>( &(unsafe { mem::transmute::<[u8; 16], u128>(self.into_inner()) } << other))
+            unsafe { mem::transmute::<u128, f128>((mem::transmute::<[u8; 16], u128>(self.inner()) << other)) }
         }
     }
         forward_ref_binop! { impl Shl, shl for $t, $f }
