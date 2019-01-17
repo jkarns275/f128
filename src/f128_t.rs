@@ -252,8 +252,24 @@ impl Num for f128 {
 
 impl NumCast for f128 {
     fn from<T: ToPrimitive>(n: T) -> Option<Self> {
-        match <f64 as NumCast>::from(n) {
-            Some(i) => f128::from_f64(i),
+        match n.to_i128() {
+            Some(int_component_i) => {
+                if let Some(int_component) = f128::from_i128(int_component_i) {
+                    match n.to_f64() {
+                        Some(frac_f) => {
+                            let fract = frac_f.fract();
+                            if let Some(fract) = f128::from_f64(fract) {
+                                Some(int_component + fract)
+                            } else {
+                                None
+                            }
+                        },
+                        None => None
+                    }
+                } else {
+                    None
+                }
+            },
             None => None
         }
     }
