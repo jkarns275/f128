@@ -33,26 +33,6 @@ impl Neg for f128 {
     }
 }
 
-macro_rules! impl_to_16 {
-    ($t:ty) => {
-        impl To16Bytes for $t {
-            fn to_arr(&self) -> [u8; 16] {
-                unsafe { mem::transmute::<$t, [u8; 16]>(*self) }
-            }
-            fn to_u128(&self) -> u128 {
-                unsafe { mem::transmute::<$t, u128>(*self) }
-            }
-            fn to_i128(&self) -> i128 {
-                unsafe { mem::transmute::<$t, i128>(*self) }
-            }
-        }
-    }
-}
-
-impl_to_16!{u128}
-impl_to_16!{i128}
-impl_to_16!{[u8; 16]}
-
 macro_rules! forward_ref_binop {
     (impl $imp:ident, $method:ident for $t:ty, $u:ty) => {
         impl<'a> $imp<$u> for &'a $t {
