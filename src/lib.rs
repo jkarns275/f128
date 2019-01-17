@@ -63,7 +63,20 @@ mod tests {
         assert_eq!(f128::INFINITY.classify(), FpCategory::Infinite);
         assert_eq!(f128::NEG_INFINITY.classify(), FpCategory::Infinite);
         assert_eq!(f128::NAN.classify(), FpCategory::Nan);
+    }
 
+    #[test]
+    fn test_conversions() {
+        assert!(f128::from_u128(123456789).0 == f128::parse("123456789.0").unwrap().0);
+        assert!(f128::from_i128(5i128).0 == f128::parse("5.0").unwrap().0);
+        assert!(f128::from_i64(-64).0 == f128::parse("-64.0").unwrap().0);
+        assert!(f128::from_u64(10_000_000).0 == f128::parse("10000000.0").unwrap().0);
+        assert!(f128::from_i32(5i32).0 == f128::parse("5.0").unwrap().0);
+        assert!(f128::from_u32(0).0 == f128::parse("0.0").unwrap().0);
+        assert!(f128::from_u16(32000).0 == f128::parse("32000.0").unwrap().0);
+        assert!(f128::from_i16(-30000).0 == f128::parse("-30000.0").unwrap().0);
+        assert!(f128::from_i8(-100).0 == f128::parse("-100.0").unwrap().0);
+        assert!(f128::from_u8(255).0 == f128::parse("255.0").unwrap().0);
     }
 }
 

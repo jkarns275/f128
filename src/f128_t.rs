@@ -6,6 +6,8 @@ use std::iter::*;
 use std::hash::{ Hash, Hasher };
 use std::mem;
 use std::slice;
+use std::str;
+use std::io::Write;
 use std::ffi::CString;
 use std::ffi::NulError;
 use num::*;
@@ -13,8 +15,17 @@ use f128_derive::*;
 use std::num::FpCategory;
 use libc::c_int;
 
+macro_rules! f128_from_x {
+    ($x: ty, $n: expr, $it: expr) => ({
+        // 32 is ascii space, so this buff will be filled with spaces after the number
+        let mut buf: [u8; $n] = [32u8; $n];
+        write!(&mut buf[..], "{}", $it).expect("Failed to write integer to buffer");
+        f128::parse(str::from_utf8(&buf[..]).unwrap()).unwrap()
+    })
+}
+
 #[derive(Clone, Copy)]
-pub struct f128(pub [u8; 16]);
+pub struct f128(pub(crate) [u8; 16]);
 
 pub trait To16Bytes {
     fn to_arr(&self) -> [u8; 16];
@@ -79,26 +90,54 @@ impl f128 {
     pub const PI            : f128 = f128([0x40, 0x00, 0x92, 0x1f, 0xb5, 0x44, 0x42, 0xd1, 0x84, 0x69, 0x89, 0x8c, 0xc5, 0x17, 0x01, 0xb8]);
     #[cfg(target_endian = "little")]
     pub const PI            : f128 = f128([0xb8, 0x01, 0x17, 0xc5, 0x8c, 0x89, 0x69, 0x84, 0xd1, 0x42, 0x44, 0xb5, 0x1f, 0x92, 0x00, 0x40]);
-#[inline(always)]
+    #[inline(always)]
+    #[cfg(target_endian = "big")]
+    pub const fn nan() -> Self {
+        f128([ 0x7F, 0xFF, 0xFF,  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFFu8, 0xFFu8, 0xFF ])
+    }
+    #[inline(always)]
     #[cfg(target_endian = "little")]
     pub const fn nan() -> Self {
         f128([ 0xFF, 0xFF, 0xFF,  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFFu8, 0xFFu8, 0x7F ])
     }
 
     #[inline(always)]
+    #[cfg(target_endian = "little")]
     pub const fn infinity() -> Self {
         f128([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0x7f])
     }
 
     #[inline(always)]
+    #[cfg(target_endian = "big")]
+    pub const fn infinity() -> Self {
+        f128([0x7F, 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    }
+
+    #[inline(always)]
+    #[cfg(target_endian = "little")]
     pub const fn neg_infinity() -> Self {
         f128([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0xff])
     }
 
     #[inline(always)]
-    pub const fn zero() -> Self { f128([0u8; 16]) }
+    #[cfg(target_endian = "big")]
+    pub const fn neg_infinity() -> Self {
+        f128([0xff, 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+    }
+
     #[inline(always)]
-    pub const fn neg_zero() -> Self { f128([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80u8]) }
+    pub const fn zero() -> Self { f128([0u8; 16]) }
+
+    #[inline(always)]
+    #[cfg(target_endian = "little")]
+    pub const fn neg_zero() -> Self { f128([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x80]) }
+
+    #[inline(always)]
+    #[cfg(target_endian = "big")]
+    pub const fn neg_zero() -> Self { f128([0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) }
+
+
     #[cfg(target_endian = "little")]
     #[inline(always)]
     pub const fn min_value() -> f128 { f128([ 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff]) }
@@ -106,10 +145,7 @@ impl f128 {
     #[inline(always)]
     pub const fn max_value() -> f128 { f128([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0x7f]) }
 
-    #[cfg(target_endian = "big")]
     pub fn from_arr(d: [u8; 16]) -> Self { f128(d) }
-    #[cfg(target_endian = "little")]
-    pub fn from_arr(mut d: [u8; 16]) -> Self { d.reverse(); f128(d) }
 
     #[inline(always)]
     pub fn from_raw_u128(d: u128) -> Self { f128::from_arr(unsafe { mem::transmute::<u128, [u8; 16]>(d) }) }
@@ -143,20 +179,54 @@ impl f128 {
     pub fn to_i128(self)   -> i128 { unsafe { mem::transmute::<[u8; 16], i128>(f128_to_i128(self.inner())) } }
     pub fn to_u128(self)   -> u128 { unsafe { mem::transmute::<[u8; 16], u128>(f128_to_u128(self.inner())) } }
 
-    pub fn from_i64(n: i64) -> Self { (unsafe { f128::from_arr(i64_to_f128(n)) }) }
-    pub fn from_u64(n: u64) -> Self { (unsafe { f128::from_arr(u64_to_f128(n)) }) }
-    pub fn from_isize(n: isize) -> Self { (unsafe { f128::from_arr(i64_to_f128(n as i64)) })}
-    pub fn from_i8(n: i8) -> Self { (unsafe { f128::from_arr(i8_to_f128(n)) }) }
-    pub fn from_i16(n: i16) -> Self { (unsafe { f128::from_arr(i16_to_f128(n)) }) }
-    pub fn from_i32(n: i32) -> Self { (unsafe { f128::from_arr(i32_to_f128(n)) }) }
-    pub fn from_usize(n: usize) -> Self { (unsafe { f128::from_arr(u64_to_f128(n as u64)) }) }
-    pub fn from_u8(n: u8) -> Self { (unsafe { f128::from_arr(u8_to_f128(n)) }) }
-    pub fn from_u16(n: u16) -> Self { (unsafe { f128::from_arr(u16_to_f128(n)) }) }
-    pub fn from_u32(n: u32) -> Self { (unsafe { f128::from_arr(u32_to_f128(n)) }) }
-    pub fn from_f32(n: f32) -> Self { (unsafe { f128::from_arr(f32_to_f128(n)) }) }
-    pub fn from_f64(n: f64) -> Self { (unsafe { f128::from_arr(f64_to_f128(n)) }) }
-    pub fn from_u128(n: u128) -> Self { unsafe { f128::from_arr(u128_to_f128(mem::transmute::<u128, [u8; 16]>(n))) } }
-    pub fn from_i128(n: i128) -> Self { unsafe { f128::from_arr(i128_to_f128(mem::transmute::<i128, [u8; 16]>(n))) } }
+    pub fn from_i64(n: i64) -> Self {
+        f128_from_x!(i64, 32, n)
+    }
+    pub fn from_u64(n: u64) -> Self {
+        f128_from_x!(u64, 32, n)
+    }
+    pub fn from_isize(n: isize) -> Self {
+        f128_from_x!(isize, 32, n)
+    }
+    pub fn from_i8(n: i8) -> Self {
+        f128_from_x!(i8, 4, n)
+    }
+    pub fn from_i16(n: i16) -> Self {
+        f128_from_x!(i16, 16, n)
+    }
+    pub fn from_i32(n: i32) -> Self {
+        f128_from_x!(i32, 16, n)
+    }
+    pub fn from_usize(n: usize) -> Self {
+        f128_from_x!(usize, 32, n)
+    }
+    pub fn from_u8(n: u8) -> Self {
+        f128_from_x!(u8, 4, n)
+    }
+    pub fn from_u16(n: u16) -> Self {
+        f128_from_x!(u16, 16, n)
+    }
+    pub fn from_u32(n: u32) -> Self {
+        f128_from_x!(u32, 16, n)
+    }
+    pub fn from_f32(n: f32) -> Self {
+        // 32 is ascii space, so this buff will be filled with spaces after the number
+        let mut buf: [u8; 64] = [32u8; 64];
+        write!(&mut buf[..], "{:E}", n).expect("Failed to convert integer to string.");
+        f128::parse(str::from_utf8(&buf[..]).unwrap()).unwrap()
+    }
+    pub fn from_f64(n: f64) -> Self {
+        // 32 is ascii space, so this buff will be filled with spaces after the number
+        let mut buf: [u8; 64] = [32u8; 64];
+        write!(&mut buf[..], "{:E}", n).expect("Failed to convert integer to string.");
+        f128::parse(str::from_utf8(&buf[..]).unwrap()).unwrap()
+    }
+    pub fn from_u128(n: u128) -> Self {
+        f128_from_x!(u128, 64, n)
+    }
+    pub fn from_i128(n: i128) -> Self {
+        f128_from_x!(i128, 64, n)
+    }
 
 
     #[inline(always)]
@@ -167,7 +237,7 @@ impl f128 {
     }
 
     pub fn to_string_fmt<T: AsRef<str>>(&self, fmt: T) -> Option<String> {
-        let mut buf: [u8; 128] = [0; 128];
+        let mut buf = [0u8; 128];
         let cstr;
         match CString::new(fmt.as_ref()) {
             Ok(e) => cstr = e,
@@ -225,7 +295,6 @@ impl f128 {
 
     pub fn classify(&self) -> FpCategory {
         let x = (self.is_normal(), self.is_finite(), self.is_nan());
-        println!("{:?}", x);
         match x {
             (true, true, false) => FpCategory::Normal,
             (false, true, false) => FpCategory::Subnormal,
