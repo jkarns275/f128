@@ -73,10 +73,6 @@ x_to_f128(double, f64);
 x_to_f128(size_t, usize);
 x_to_f128(ssize_t, isize);
 
-int main() {
-  u32_to_f128(10);
-}
-
  Wrapper f128_add(Wrapper a, Wrapper b){
   Wrapper x;
   x.value = a.value + b.value;
