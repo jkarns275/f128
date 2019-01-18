@@ -23,6 +23,7 @@ mod tests {
     use std::str::FromStr;
     use std::num::FpCategory;
     use num_traits::*;
+    use ffi::*;
 
     #[test]
     fn test_constants() {
@@ -85,6 +86,55 @@ mod tests {
         assert!(f128::from_i16(-30000).unwrap().0 == f128::parse("-30000.0").unwrap().0);
         assert!(f128::from_i8(-100).unwrap().0 == f128::parse("-100.0").unwrap().0);
         assert!(f128::from_u8(255).unwrap().0 == f128::parse("255.0").unwrap().0);
+    }
+
+    #[test]
+    fn test_to_string() {
+        assert_eq!(f128::infinity().to_string().as_str(), "inf");
+        assert_eq!(f128::neg_infinity().to_string().as_str(), "-inf");
+        assert_eq!(f128::nan().to_string().as_str(), "nan");
+        assert_eq!(f128::neg_zero().to_string().as_str(), "-0");
+        assert_eq!(f128::zero().to_string().as_str(), "0");
+    }
+
+    macro_rules! assert_approx_eq {
+        ($a:expr, $b:expr, $epsilon:expr) => ( assert!(($a - $b).abs() < $epsilon) )
+    }
+
+    const EPSILON: f128 = f128::EPSILON;
+
+    #[test]
+    fn test_casts_to_f128() {
+        let thirty = f128::parse("30").unwrap();
+        let nthirty = f128::parse("-30").unwrap();
+        let oneandhalf = f128::parse("1.5").unwrap();
+        assert_approx_eq!(oneandhalf, f128::from_f64(1.5).unwrap(), EPSILON);
+        assert_approx_eq!(oneandhalf, f128::from_f32(1.5).unwrap(), EPSILON);
+        assert_approx_eq!(thirty, f128::from_u64(30).unwrap(), EPSILON);
+        assert_approx_eq!(nthirty, f128::from_i64(-30).unwrap(), EPSILON);
+        assert_approx_eq!(thirty, f128::from_u32(30).unwrap(), EPSILON);
+        assert_approx_eq!(nthirty, f128::from_i32(-30).unwrap(), EPSILON);
+        assert_approx_eq!(thirty, f128::from_u16(30).unwrap(), EPSILON);
+        assert_approx_eq!(nthirty, f128::from_i16(-30).unwrap(), EPSILON);
+        assert_approx_eq!(thirty, f128::from_u8(30).unwrap(), EPSILON);
+        assert_approx_eq!(nthirty, f128::from_i8(-30).unwrap(), EPSILON);
+    }
+
+    #[test]
+    fn test_casts_from_f128() {
+        use std::{f64, f32};
+        let oneandhalf = f128::parse("1.6").unwrap();
+        assert_approx_eq!(1.6f64, oneandhalf.to_f64().unwrap(), f64::EPSILON);
+        assert_approx_eq!(1.6f32, oneandhalf.to_f32().unwrap(), f32::EPSILON);
+        assert_eq!(1i32, oneandhalf.to_i32().unwrap());
+        assert_eq!(1u32, oneandhalf.to_u32().unwrap());
+        assert_eq!(1i64, oneandhalf.to_i64().unwrap());
+        assert_eq!(1u64, oneandhalf.to_u64().unwrap());
+        assert_eq!(1i16, oneandhalf.to_i16().unwrap());
+        assert_eq!(1u16, oneandhalf.to_u16().unwrap());
+        assert_eq!(1i8, oneandhalf.to_i8().unwrap());
+        assert_eq!(1u8, oneandhalf.to_u8().unwrap());
+
     }
 }
 
