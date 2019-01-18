@@ -4,7 +4,6 @@ use f128_t::f128;
 
 #[link(name = "f128", kind = "static")]
 extern "C" {
-    // Elementary methods
     pub fn f128_add(x: [u8; 16], y: [u8; 16]) -> [u8; 16];
     pub fn f128_sub(x: [u8; 16], y: [u8; 16]) -> [u8; 16];
     pub fn f128_div(x: [u8; 16], y: [u8; 16]) -> [u8; 16];
@@ -27,7 +26,7 @@ extern "C" {
     pub fn f128_to_u64	(x: [u8; 16]) -> u64;
     pub fn u128_to_f128	(x: [u8; 16]) -> [u8; 16];
     pub fn f128_to_u128	(x: [u8; 16]) -> [u8; 16];
-    pub fn isize_to_f128	(x: [u8; 16]) -> [u8; 16];
+    pub fn isize_to_f128	(x: isize) -> [u8; 16];
     pub fn f128_to_isize	(x: [u8; 16]) -> [u8; 16];
     pub fn i8_to_f128	(x: i8) -> [u8; 16];
     pub fn f128_to_i8	(x: [u8; 16]) -> i8;
