@@ -493,12 +493,13 @@ impl Float for f128 {
 
     fn powi(self, n: i32) -> f128 {
         let mut i = self.clone();
+        if n == 0 { return f128::ONE };
         if (n < 0) {
-            for _ in n..0 {
+            for _ in n as i64 - 1..0 {
                 i /= self;
             }
         } else {
-            for _ in 0..n {
+            for _ in 1..n {
                 i *= self;
             }
         }
