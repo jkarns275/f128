@@ -16,10 +16,10 @@ Wrapper strtoflt128_f(const char *s) {
   return (Wrapper) { strtoflt128(s, NULL) };
 }
 
-#define x_to_f128(x, n) Wrapper n##_to_f128(x a) {  \
-    Wrapper d;\
-    d.value = (f128) a;                          \
-    return d;\
+#define x_to_f128(x, n) Wrapper n##_to_f128(x a) {    \
+    Wrapper d;                                        \
+    d.value = (f128) a;                               \
+    return d;                                         \
 }
 
 #define f128_to_x(x, n) x f128_to_##n(Wrapper a) {   \
@@ -58,20 +58,24 @@ Wrapper i128_to_f128(__int128 a) {
 }
 
 
-x_to_f128(int8_t, i8)
-x_to_f128(int16_t, i16)
-x_to_f128(int32_t, i32)
-x_to_f128(int64_t, i64)
-x_to_f128(uint8_t, u8)
-x_to_f128(uint16_t, u16)
-x_to_f128(uint32_t, u32)
-x_to_f128(uint64_t, u64)
-x_to_f128(float, f32)
-x_to_f128(double, f64)
+x_to_f128(int8_t, i8);
+x_to_f128(int16_t, i16);
+x_to_f128(int32_t, i32);
+x_to_f128(int64_t, i64);
+x_to_f128(uint8_t, u8);
+x_to_f128(uint16_t, u16);
+x_to_f128(uint32_t, u32);
+x_to_f128(uint64_t, u64);
+x_to_f128(float, f32);
+x_to_f128(double, f64);
 //x_to_f128(__int128, i128)
 //x_to_f128(unsigned __int128, u128)
-x_to_f128(size_t, usize)
-x_to_f128(ssize_t, isize)
+x_to_f128(size_t, usize);
+x_to_f128(ssize_t, isize);
+
+int main() {
+  u32_to_f128(10);
+}
 
  Wrapper f128_add(Wrapper a, Wrapper b){
   Wrapper x;
