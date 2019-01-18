@@ -7,7 +7,7 @@ license = "MIT"
 description = "Bindings to the gcc quadmath library"
 
 [dependencies]
-num = "0.1"
+num-traits = "0.2.6"
 libc = "0.2"
 
 [build-dependencies]
