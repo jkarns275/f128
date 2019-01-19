@@ -203,7 +203,7 @@ impl f128 {
             Err(_) => return None
         };
         let n = unsafe {
-            qtostr((&mut buf).as_mut_ptr(), 128, cstr.as_ptr(), self.clone().inner())
+            qtostr((&mut buf).as_mut_ptr(), 128, cstr.as_ptr(), self.clone())
         };
         let mut v = Vec::with_capacity(n as usize);
         for i in 0..n {
@@ -222,7 +222,7 @@ impl f128 {
         let cstr = CString::new(s.as_ref())?;
         let result = unsafe { strtoflt128_f(cstr.as_ptr()) };
 
-        Ok(unsafe { f128(strtoflt128_f(cstr.as_ptr()))})
+        Ok(unsafe { strtoflt128_f(cstr.as_ptr()) })
     }
 
     pub fn exp_bits(&self) -> u32 {
@@ -246,123 +246,119 @@ impl One for f128 {
 
 impl ToPrimitive for f128 {
     fn to_i64(&self)    -> Option<i64> {
-        Some(unsafe { f128_to_i64(self.inner()) })
+        Some(unsafe { f128_to_i64(*self) })
     }
     fn to_u64(&self)    -> Option<u64> {
-        Some(unsafe { f128_to_u64(self.inner()) })
+        Some(unsafe { f128_to_u64(*self) })
     }
     fn to_isize(&self)  -> Option<isize> {
-        Some(unsafe { f128_to_i64(self.inner()) as isize })
+        Some(unsafe { f128_to_i64(*self) as isize })
     }
     fn to_i8(&self)     -> Option<i8> {
-        Some(unsafe { f128_to_i8(self.inner()) })
+        Some(unsafe { f128_to_i8(*self) })
     }
     fn to_i16(&self)    -> Option<i16> {
-        Some(unsafe { f128_to_i16(self.inner()) })
+        Some(unsafe { f128_to_i16(*self) })
     }
     fn to_i32(&self)    -> Option<i32> {
-        Some(unsafe { f128_to_i32(self.inner()) })
+        Some(unsafe { f128_to_i32(*self) })
     }
     fn to_usize(&self)  -> Option<usize> {
-        Some(unsafe { f128_to_u64(self.inner()) as usize })
+        Some(unsafe { f128_to_u64(*self) as usize })
     }
     fn to_u8(&self)     -> Option<u8> {
-        Some(unsafe { f128_to_u8(self.inner()) })
+        Some(unsafe { f128_to_u8(*self) })
     }
     fn to_u16(&self)    -> Option<u16> {
-        Some(unsafe { f128_to_u16(self.inner()) })
+        Some(unsafe { f128_to_u16(*self) })
     }
     fn to_u32(&self)    -> Option<u32> {
-        Some(unsafe { f128_to_u32(self.inner()) })
+        Some(unsafe { f128_to_u32(*self) })
     }
     fn to_f32(&self)    -> Option<f32> {
-        Some(unsafe { f128_to_f32(self.inner()) })
+        Some(unsafe { f128_to_f32(*self) })
     }
     fn to_f64(&self)    -> Option<f64> {
-        Some(unsafe { f128_to_f64(self.inner()) })
+        Some(unsafe { f128_to_f64(*self) })
     }
     fn to_i128(&self)   -> Option<i128> {
-        Some(unsafe {
-            mem::transmute::<[u8; 16], i128>(f128_to_i128(self.inner()))
-        })
+        Some(unsafe { f128_to_i128(*self) })
     }
     fn to_u128(&self)   -> Option<u128> {
-        Some(unsafe {
-            mem::transmute::<[u8; 16], u128>(f128_to_u128(self.inner()))
-        })
+        Some(unsafe { f128_to_u128(*self) })
     }
 }
 
 impl FromPrimitive for f128 {
     fn from_i64(n: i64) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             i64_to_f128(n)
-        }))
+        })
     }
     fn from_u64(n: u64) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             u64_to_f128(n)
-        }))
+        })
     }
     fn from_isize(n: isize) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             isize_to_f128(n)
-        }))
+        })
     }
     fn from_i8(n: i8) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             i8_to_f128(n)
-        }))
+        })
     }
     fn from_i16(n: i16) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             i16_to_f128(n)
-        }))
+        })
     }
     fn from_i32(n: i32) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             i32_to_f128(n)
-        }))
+        })
     }
     fn from_usize(n: usize) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             usize_to_f128(n)
-        }))
+        })
     }
     fn from_u8(n: u8) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
           u8_to_f128(n)
-        }))
+        })
     }
     fn from_u16(n: u16) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             u16_to_f128(n)
-        }))
+        })
     }
     fn from_u32(n: u32) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             u32_to_f128(n)
-        }))
+        })
     }
     fn from_f32(n: f32) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             f32_to_f128(n)
-        }))
+        })
     }
     fn from_f64(n: f64) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             f64_to_f128(n)
-        }))
+        })
     }
     fn from_u128(n: u128) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             u128_to_f128(mem::transmute(n))
-        }))
+        })
     }
     fn from_i128(n: i128) -> Option<Self> {
-        Some(f128(unsafe {
+        Some(unsafe {
             i128_to_f128(mem::transmute(n))
-        }))
+        })
     }
 }
 
@@ -428,24 +424,24 @@ impl Float for f128 {
     }
 
     fn floor(self) -> Self {
-        f128::from_arr(unsafe { floorq_f(self.0) })
+        unsafe { floorq_f(self) }
     }
 
     fn ceil(self) -> Self {
-        f128::from_arr(unsafe { ceilq_f(self.0) })
+        unsafe { ceilq_f(self) }
     }
 
     fn round(self) -> Self {
-        f128::from_arr(unsafe { roundq_f(self.0) })
+        unsafe { roundq_f(self) }
     }
 
     fn trunc(self) -> Self {
-        f128::from_arr(unsafe { truncq_f(self.0) })
+        unsafe { truncq_f(self) }
     }
 
     fn fract(self) -> Self {
         let mut x: c_int = 0;
-        f128::from_arr(unsafe { frexpq_f(self.0, &mut x) })
+        unsafe { frexpq_f(self, &mut x) }
     }
 
     #[cfg(target_endian = "big")]
@@ -484,7 +480,7 @@ impl Float for f128 {
     }
 
     fn mul_add(self, a: f128, b: f128) -> f128 {
-        f128::from_arr(unsafe { fmaq_f(self.0, a.0, b.0) })
+        unsafe { fmaq_f(self, a, b) }
     }
 
     fn recip(self) -> f128 {
@@ -507,15 +503,15 @@ impl Float for f128 {
     }
 
     fn powf(self, n: f128) -> f128 {
-        f128::from_arr(unsafe { powq_f(self.0, n.0) })
+        unsafe { powq_f(self, n) }
     }
 
     fn sqrt(self) -> f128 {
-        f128::from_arr(unsafe { sqrtq_f(self.0) })
+        unsafe { sqrtq_f(self) }
     }
 
     fn exp(self) -> f128 {
-        f128::from_arr(unsafe { expq_f(self.0) })
+        unsafe { expq_f(self) }
     }
 
     fn exp2(self) -> f128 {
@@ -523,7 +519,7 @@ impl Float for f128 {
         (f128::ONE * f128::from_u8(2).unwrap()).powf(self)
     }
 
-    fn ln(self) -> f128 { f128::from_arr( unsafe { logq_f(self.0) }) }
+    fn ln(self) -> f128 { unsafe { logq_f(self) } }
 
     fn log(self, base: f128) -> f128 {
         // Change of base formula
@@ -532,9 +528,9 @@ impl Float for f128 {
         numr / denm
     }
 
-    fn log2(self) -> f128 { f128::from_arr( unsafe { log2q_f(self.0) }) }
+    fn log2(self) -> f128 { unsafe { log2q_f(self) } }
 
-    fn log10(self) -> f128 { f128::from_arr( unsafe { log10q_f(self.0) }) }
+    fn log10(self) -> f128 { unsafe { log10q_f(self) } }
 
     fn max(self, other: f128) -> f128 {
         unsafe {
@@ -554,41 +550,41 @@ impl Float for f128 {
 
     fn abs_sub(self, other: f128) -> f128 { (self - other).abs() }
 
-    fn cbrt(self) -> f128 { f128::from_arr( unsafe { cbrtq_f(self.0) }) }
+    fn cbrt(self) -> f128 { unsafe { cbrtq_f(self) } }
 
-    fn hypot(self, other: f128) -> f128 { f128::from_arr( unsafe { hypotq_f(self.0, other.0) }) }
+    fn hypot(self, other: f128) -> f128 { unsafe { hypotq_f(self, other) } }
 
-    fn sin(self) -> f128 { f128::from_arr( unsafe { sinq_f(self.0) }) }
+    fn sin(self) -> f128 { unsafe { sinq_f(self) } }
 
-    fn cos(self) -> f128 { f128::from_arr( unsafe { cosq_f(self.0) }) }
+    fn cos(self) -> f128 { unsafe { cosq_f(self) } }
 
-    fn tan(self) -> f128 { f128::from_arr( unsafe { tanq_f(self.0) }) }
+    fn tan(self) -> f128 { unsafe { tanq_f(self) } }
 
-    fn asin(self) -> f128 { f128::from_arr( unsafe { asinq_f(self.0) }) }
+    fn asin(self) -> f128 { unsafe { asinq_f(self) } }
 
-    fn acos(self) -> f128 { f128::from_arr( unsafe { acosq_f(self.0) }) }
+    fn acos(self) -> f128 { unsafe { acosq_f(self) } }
 
-    fn atan(self) -> f128 { f128::from_arr( unsafe { atanq_f(self.0) }) }
+    fn atan(self) -> f128 { unsafe { atanq_f(self) } }
 
-    fn atan2(self, other: f128) -> f128 { f128::from_arr( unsafe { atan2q_f(self.0, other.0) }) }
+    fn atan2(self, other: f128) -> f128 { unsafe { atan2q_f(self, other) } }
 
     fn sin_cos(self) -> (f128, f128) { (self.sin(), self.cos()) }
 
-    fn exp_m1(self) -> f128 { f128::from_arr( unsafe { expm1q_f(self.0) }) }
+    fn exp_m1(self) -> f128 { unsafe { expm1q_f(self) } }
 
-    fn ln_1p(self) -> f128 { f128::from_arr( unsafe { log1pq_f(self.0) }) }
+    fn ln_1p(self) -> f128 { unsafe { log1pq_f(self) } }
 
-    fn sinh(self) -> f128 { f128::from_arr( unsafe { sinhq_f(self.0) }) }
+    fn sinh(self) -> f128 { unsafe { sinhq_f(self) } }
 
-    fn cosh(self) -> f128 { f128::from_arr( unsafe { coshq_f(self.0) }) }
+    fn cosh(self) -> f128 { unsafe { coshq_f(self) } }
 
-    fn tanh(self) -> f128 { f128::from_arr( unsafe { tanhq_f(self.0) }) }
+    fn tanh(self) -> f128 { unsafe { tanhq_f(self) } }
 
-    fn asinh(self) -> f128 { f128::from_arr( unsafe { asinhq_f(self.0) }) }
+    fn asinh(self) -> f128 { unsafe { asinhq_f(self) } }
 
-    fn acosh(self) -> f128 { f128::from_arr( unsafe { acoshq_f(self.0) }) }
+    fn acosh(self) -> f128 { unsafe { acoshq_f(self) } }
 
-    fn atanh(self) -> f128 { f128::from_arr( unsafe { atanhq_f(self.0) }) }
+    fn atanh(self) -> f128 { unsafe { atanhq_f(self) } }
 
     fn integer_decode(self) -> (u64, i16, i8) {
         unimplemented!("This function cannot be accurately implemented with num v0.2.6 - the mantissa type needs to be upped to u128.")
