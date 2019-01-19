@@ -27,7 +27,7 @@ extern "C" {
     pub fn u128_to_f128	(x: u128) -> f128;
     pub fn f128_to_u128	(x: f128) -> u128;
     pub fn isize_to_f128	(x: isize) -> f128;
-    pub fn f128_to_isize	(x: f128) -> f128;
+    pub fn f128_to_isize	(x: f128) -> isize;
     pub fn i8_to_f128	(x: i8) -> f128;
     pub fn f128_to_i8	(x: f128) -> i8;
     pub fn i16_to_f128	(x: i16) -> f128;
