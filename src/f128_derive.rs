@@ -176,7 +176,7 @@ impl Add for f128 {
 
     #[inline]
     fn add(self, other: f128) -> f128 {
-        f128::from_arr(unsafe { ffi::f128_add(self.into_inner(), other.into_inner()) })
+        unsafe { ffi::f128_add(self, other) }
     }
 
 }
@@ -195,7 +195,7 @@ impl Sub for f128 {
 
     #[inline]
     fn sub(self, other: f128) -> f128 {
-        f128::from_arr(unsafe { ffi::f128_sub(self.into_inner(), other.into_inner()) })
+        unsafe { ffi::f128_sub(self, other) }
     }
 }
 
@@ -213,7 +213,7 @@ impl Mul for f128 {
 
     #[inline]
     fn mul(self, other: f128) -> f128 {
-        f128::from_arr(unsafe { ffi::f128_mul(self.into_inner(), other.into_inner()) })
+        unsafe { ffi::f128_mul(self, other) }
     }
 }
 
@@ -231,7 +231,7 @@ impl Div for f128 {
 
     #[inline]
     fn div(self, other: f128) -> f128 {
-        f128::from_arr(unsafe { ffi::f128_div(self.into_inner(), other.into_inner()) })
+        unsafe { ffi::f128_div(self, other) }
     }
 }
 
@@ -248,7 +248,7 @@ impl Rem<f128> for f128 {
     type Output = f128;
 
     fn rem(self, other: f128) -> f128 {
-        unsafe { f128::from_arr(ffi::fmodq_f(self.inner(), other.inner())) }
+        unsafe { ffi::fmodq_f(self, other) }
     }
 }
 
@@ -256,7 +256,7 @@ impl<'a> Rem<&'a f128> for f128 {
     type Output = f128;
 
     fn rem(self, other: &'a f128) -> f128 {
-        unsafe { f128::from_arr(ffi::fmodq_f(self.inner(), other.inner())) }
+        unsafe { ffi::fmodq_f(self, *other) }
     }
 }
 
@@ -264,7 +264,7 @@ impl<'a, 'b> Rem<&'a f128> for &'b f128 {
     type Output = f128;
 
     fn rem(self, other: &'a f128) -> f128 {
-        unsafe { f128::from_arr(ffi::fmodq_f(self.inner(), other.inner())) }
+        unsafe { ffi::fmodq_f(*self, *other) }
     }
 }
 
@@ -272,7 +272,7 @@ impl<'a> Rem<f128> for &'a f128 {
     type Output = f128;
 
     fn rem(self, other: f128) -> f128 {
-        unsafe { f128::from_arr(ffi::fmodq_f(self.inner(), other.inner())) }
+        unsafe { ffi::fmodq_f(*self, other) }
     }
 }
 
@@ -316,39 +316,19 @@ macro_rules! impl_from {
         impl From<$sm> for f128 {
             #[inline]
             fn from(small: $sm) -> f128 {
-                unsafe { f128::from_arr(concat_idents!($sm, _to_f128)(small)) }
+                unsafe { concat_idents!($sm, _to_f128)(small) }
             }
         }
         impl Into<$sm> for f128 {
             #[inline]
             fn into(self) -> $sm {
-               unsafe { concat_idents!(f128_to_, $sm)(self.0) }
+               unsafe { concat_idents!(f128_to_, $sm)(self) }
             }
         }
     )*)
 }
 
-
-macro_rules! impl_from_arr {
-    ($($sm: ident)*) => ($(
-        impl From<$sm> for f128 {
-            #[inline]
-            fn from(small: $sm) -> f128 {
-                let x = unsafe { mem::transmute::<$sm, [u8; 16]>(small) };
-                unsafe { f128::from_arr(concat_idents!($sm, _to_f128)(x)) }
-            }
-        }
-        impl Into<$sm> for f128 {
-            #[inline]
-            fn into(self) -> $sm {
-               unsafe { mem::transmute::<[u8; 16], $sm>(concat_idents!(f128_to_, $sm)(self.0)) }
-            }
-        }
-    )*)
-}
-
-impl_from! { u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 }
-impl_from_arr! { i128 u128 }
+impl_from! { u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 u128 i128 }
 
 pub trait F128 {
     fn from_f128(x: f128) -> Self;
@@ -360,40 +340,22 @@ macro_rules! into_f128_gen {
         impl F128 for $t {
             #[inline]
             fn from_f128(x: f128) -> Self {
-                unsafe { concat_idents!(f128_to_, $t)(x.into_inner()) }
+                unsafe { concat_idents!(f128_to_, $t)(x) }
             }
             #[inline]
             fn f128(self) -> f128 {
-                unsafe { f128::from_arr(concat_idents!($t, _to_f128)(self)) }
+                unsafe { concat_idents!($t, _to_f128)(self) }
             }
         }
     )*)
 }
 
-
-macro_rules! into_f128_arr_gen {
-    ($($t:ident)*) => ($(
-        impl F128 for $t {
-            #[inline]
-            fn from_f128(x: f128) -> Self {
-                unsafe { mem::transmute::<[u8; 16], $t>(concat_idents!(f128_to_, $t)(x.into_inner())) }
-            }
-            #[inline]
-            fn f128(self) -> f128 {
-                unsafe { f128::from_arr(concat_idents!($t, _to_f128)( mem::transmute::<$t, [u8; 16]>(self) )) }
-            }
-        }
-    )*)
-}
-
-
-into_f128_gen! { u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 }
-into_f128_arr_gen! { i128 u128 }
+into_f128_gen! { u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 u128 i128 }
 
 impl PartialOrd for f128 {
     fn partial_cmp(&self, other: &f128) -> Option<Ordering> {
-        let lte = unsafe { lteq(self.into_inner(), other.into_inner()) };
-        let gte = unsafe { gteq(self.into_inner(), other.into_inner()) };
+        let lte = unsafe { lteq(*self, *other) };
+        let gte = unsafe { gteq(*self, *other) };
 
         match (lte != 0, gte != 0) {
             (false, false) => None,
@@ -406,11 +368,11 @@ impl PartialOrd for f128 {
 
 impl PartialEq for f128 {
     fn eq(&self, other: &Self) -> bool {
-        unsafe { eqq(self.0, other.0) != 0 }
+        unsafe { eqq(*self, *other) != 0 }
     }
 
     fn ne(&self, other: &Self) -> bool {
-        unsafe { neqq(self.0, other.0) != 0 }
+        unsafe { neqq(*self, *other) != 0 }
     }
 }
 
