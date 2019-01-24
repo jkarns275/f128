@@ -309,21 +309,21 @@ void f128_to_str(Wrapper a, size_t n, char* buf, const char* format) {
 }
 
 unsigned char gtq(Wrapper a, Wrapper b) {
-    return (unsigned char) a.value > b.value;
+    return (unsigned char) (a.value > b.value);
 }
 
 unsigned char gteq(Wrapper a, Wrapper b) {
-    return (unsigned char) a.value >= b.value;
+    return (unsigned char) (a.value >= b.value);
 }
 unsigned char ltq(Wrapper a, Wrapper b) {
-    return (unsigned char) a.value < b.value;
+    return (unsigned char) (a.value < b.value);
 }
 unsigned char lteq(Wrapper a, Wrapper b) {
-    return (unsigned char) a.value <= b.value;
+    return (unsigned char) (a.value <= b.value);
 }
 unsigned char eqq(Wrapper a, Wrapper b) {
-    return (unsigned char) a.value == b.value;
+    return (unsigned char) (a.value == b.value);
 }
 unsigned char neqq(Wrapper a, Wrapper b) {
-    return (unsigned char) a.value != b.value;
+    return (unsigned char) (a.value != b.value);
 }
