@@ -71,7 +71,11 @@ mod tests {
     #[test]
     fn test_f128_to_primitive() {
         let a = f128::parse("1003.0").unwrap();
-        assert!(1003 == a.to_i64().unwrap());
+
+        assert_eq!(1003i64, a.to_i64().unwrap());
+        assert_eq!(1003u64, a.to_u64().unwrap());
+        assert_eq!(1003i128, a.to_i128().unwrap());
+        assert_eq!(1003u128, a.to_u128().unwrap());
     }
 
     #[test]
