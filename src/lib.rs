@@ -138,7 +138,19 @@ mod tests {
         assert_eq!(1u16, oneandhalf.to_u16().unwrap());
         assert_eq!(1i8, oneandhalf.to_i8().unwrap());
         assert_eq!(1u8, oneandhalf.to_u8().unwrap());
+    }
 
+    #[test]
+    fn test_cmp() {
+        let a = f128::parse("1.5").unwrap();
+        let c = f128::parse("1.5").unwrap();
+        let b = f128::parse("3.0").unwrap();
+        assert!(a == c);
+        assert!(a < b);
+        assert!(a <= b);
+        assert!(b > a);
+        assert!(b >= a);
+        assert!(a != b);
     }
 }
 
