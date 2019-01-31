@@ -24,6 +24,7 @@ macro_rules! f128_from_x {
     })
 }
 
+#[repr(C)]
 #[derive(Clone, Copy)]
 pub struct f128(pub(crate) [u8; 16]);
 
