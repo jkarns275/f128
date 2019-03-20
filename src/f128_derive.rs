@@ -1,16 +1,16 @@
 use f128_t::*;
-use std::ops::*;
 use ffi;
 use ffi::*;
-use std::convert::{ From, Into };
-use std::iter::*;
-use std::hash::{ Hash, Hasher };
-use std::mem;
-use std::slice;
-use std::ffi::CString;
-use std::cmp::*;
 use std::cmp::Ordering::*;
-use std::fmt::{Debug, Formatter, Error};
+use std::cmp::*;
+use std::convert::{From, Into};
+use std::ffi::CString;
+use std::fmt::{Debug, Error, Formatter};
+use std::hash::{Hash, Hasher};
+use std::iter::*;
+use std::mem;
+use std::ops::*;
+use std::slice;
 
 impl Debug for f128 {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
@@ -60,21 +60,25 @@ macro_rules! forward_ref_binop {
                 $imp::$method(*self, *other)
             }
         }
-    }
+    };
 }
 
 macro_rules! shl_impl {
-    ($t:ty, $f:ty) => (
-    impl Shr<$f> for $t {
-        type Output = $t;
+    ($t:ty, $f:ty) => {
+        impl Shr<$f> for $t {
+            type Output = $t;
 
-        #[inline]
-        fn shr(self, other: $f) -> f128 {
-            unsafe { mem::transmute::<u128, f128>((mem::transmute::<[u8; 16], u128>(self.inner()) >> other)) }
+            #[inline]
+            fn shr(self, other: $f) -> f128 {
+                unsafe {
+                    mem::transmute::<u128, f128>(
+                        (mem::transmute::<[u8; 16], u128>(self.inner()) >> other),
+                    )
+                }
+            }
         }
-    }
         forward_ref_binop! { impl Shr, shr for $t, $f }
-    )
+    };
 }
 
 shl_impl! { f128, u8 }
@@ -91,16 +95,15 @@ shl_impl! { f128, i64 }
 shl_impl! { f128, i128 }
 shl_impl! { f128, isize }
 
-
 macro_rules! shr_assign_impl {
-    ($t:ty, $f:ty) => (
+    ($t:ty, $f:ty) => {
         impl ShrAssign<$f> for $t {
             #[inline]
             fn shr_assign(&mut self, other: $f) {
                 *self = *self >> other
             }
         }
-    )
+    };
 }
 
 shr_assign_impl! {f128, u8 }
@@ -118,17 +121,21 @@ shr_assign_impl! {f128, i128 }
 shr_assign_impl! {f128, isize }
 
 macro_rules! shl_impl {
-    ($t:ty, $f:ty) => (
-    impl Shl<$f> for $t {
-        type Output = $t;
+    ($t:ty, $f:ty) => {
+        impl Shl<$f> for $t {
+            type Output = $t;
 
-        #[inline]
-        fn shl(self, other: $f) -> $t {
-            unsafe { mem::transmute::<u128, f128>((mem::transmute::<[u8; 16], u128>(self.inner()) << other)) }
+            #[inline]
+            fn shl(self, other: $f) -> $t {
+                unsafe {
+                    mem::transmute::<u128, f128>(
+                        (mem::transmute::<[u8; 16], u128>(self.inner()) << other),
+                    )
+                }
+            }
         }
-    }
         forward_ref_binop! { impl Shl, shl for $t, $f }
-    )
+    };
 }
 
 shl_impl! { f128, u8 }
@@ -145,16 +152,15 @@ shl_impl! { f128, i64 }
 shl_impl! { f128, i128 }
 shl_impl! { f128, isize }
 
-
 macro_rules! shl_assign_impl {
-    ($t:ty, $f:ty) => (
+    ($t:ty, $f:ty) => {
         impl ShlAssign<$f> for $t {
             #[inline]
             fn shl_assign(&mut self, other: $f) {
                 *self = *self << other
             }
         }
-    )
+    };
 }
 
 shl_assign_impl! {f128, u8 }
@@ -178,7 +184,6 @@ impl Add for f128 {
     fn add(self, other: f128) -> f128 {
         unsafe { ffi::f128_add(self, other) }
     }
-
 }
 
 impl AddAssign for f128 {
@@ -277,32 +282,32 @@ impl<'a> Rem<f128> for &'a f128 {
 }
 
 impl Sum for f128 {
-    fn sum<I: Iterator<Item=f128>>(iter: I) -> f128 {
+    fn sum<I: Iterator<Item = f128>>(iter: I) -> f128 {
         iter.fold(0.into(), |a, b| a + b)
     }
 }
 
 impl Product for f128 {
-    fn product<I: Iterator<Item=f128>>(iter: I) -> f128 {
+    fn product<I: Iterator<Item = f128>>(iter: I) -> f128 {
         iter.fold(1.into(), |a, b| a * b)
     }
 }
 
 impl<'a> Sum<&'a f128> for f128 {
-    fn sum<I: Iterator<Item=&'a f128>>(iter: I) -> f128 {
+    fn sum<I: Iterator<Item = &'a f128>>(iter: I) -> f128 {
         iter.fold(0.into(), |a, b| a + *b)
     }
 }
 
 impl<'a> Product<&'a f128> for f128 {
-    fn product<I: Iterator<Item=&'a f128>>(iter: I) -> f128 {
+    fn product<I: Iterator<Item = &'a f128>>(iter: I) -> f128 {
         iter.fold(1.into(), |a, b| a * *b)
     }
 }
 
 impl Hash for f128 {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        state.write_i128( unsafe { mem::transmute::<[u8; 16], i128>(self.inner()) })
+        state.write_i128(unsafe { mem::transmute::<[u8; 16], i128>(self.inner()) })
     }
     fn hash_slice<H: Hasher>(data: &[f128], state: &mut H) {
         let newlen = data.len() * mem::size_of::<f128>();
@@ -311,46 +316,56 @@ impl Hash for f128 {
     }
 }
 
-macro_rules! impl_from {
-    ($($sm: ident)*) => ($(
-        impl From<$sm> for f128 {
+macro_rules! impl_from_to {
+    ($($to:ident, $from:ident - $ty:ty),*) => ($(
+        impl From<$ty> for f128 {
             #[inline]
-            fn from(small: $sm) -> f128 {
-                unsafe { concat_idents!($sm, _to_f128)(small) }
+            fn from(small: $ty) -> f128 {
+                unsafe { $from(small) }
             }
         }
-        impl Into<$sm> for f128 {
+        impl Into<$ty> for f128 {
             #[inline]
-            fn into(self) -> $sm {
-               unsafe { concat_idents!(f128_to_, $sm)(self) }
+            fn into(self) -> $ty {
+               unsafe { $to(self) }
             }
         }
+
+        impl F128 for $ty {
+            #[inline]
+            fn from_f128(x: f128) -> Self {
+                unsafe { $to(x) }
+            }
+            #[inline]
+            fn f128(self) -> f128 {
+                unsafe { $from(self) }
+            }
+        }
+
     )*)
 }
 
-impl_from! { u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 u128 i128 }
+impl_from_to! {
+    f128_to_isize,   isize_to_f128  - isize,
+    f128_to_i8,      i8_to_f128     - i8,
+    f128_to_i16,     i16_to_f128    - i16,
+    f128_to_i32,     i32_to_f128    - i32,
+    f128_to_i64,     i64_to_f128    - i64,
+    f128_to_i128,    i128_to_f128   - i128,
+    f128_to_usize,   usize_to_f128  - usize,
+    f128_to_u8,      u8_to_f128     - u8,
+    f128_to_u16,     u16_to_f128    - u16,
+    f128_to_u32,     u32_to_f128    - u32,
+    f128_to_u64,     u64_to_f128    - u64,
+    f128_to_u128,    u128_to_f128   - u128,
+    f128_to_f32,     f32_to_f128    - f32,
+    f128_to_f64,     f64_to_f128    - f64
+}
 
 pub trait F128 {
     fn from_f128(x: f128) -> Self;
     fn f128(self) -> f128;
 }
-
-macro_rules! into_f128_gen {
-    ($($t:ident)*) => ($(
-        impl F128 for $t {
-            #[inline]
-            fn from_f128(x: f128) -> Self {
-                unsafe { concat_idents!(f128_to_, $t)(x) }
-            }
-            #[inline]
-            fn f128(self) -> f128 {
-                unsafe { concat_idents!($t, _to_f128)(self) }
-            }
-        }
-    )*)
-}
-
-into_f128_gen! { u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 u128 i128 }
 
 impl PartialOrd for f128 {
     fn partial_cmp(&self, other: &f128) -> Option<Ordering> {
@@ -375,4 +390,3 @@ impl PartialEq for f128 {
         unsafe { neqq(*self, *other) != 0 }
     }
 }
-
