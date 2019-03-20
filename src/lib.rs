@@ -1,29 +1,22 @@
-#![feature(link_args)]
-#![feature(i128_type)]
-#![feature(i128)]
-#![feature(libc)]
-#![feature(concat_idents)]
-#![feature(use_extern_macros)]
-#![feature(const_fn)]
 #![allow(warnings)]
 extern crate libc;
 extern crate num_traits;
 
 use std::f64;
-mod ffi;
-mod f128_t;
 mod f128_derive;
+mod f128_t;
+mod ffi;
 
-pub use f128_t::f128;
 pub use f128_derive::*;
+pub use f128_t::f128;
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::str::FromStr;
-    use std::num::FpCategory;
-    use num_traits::*;
     use ffi::*;
+    use num_traits::*;
+    use std::num::FpCategory;
+    use std::str::FromStr;
 
     #[test]
     fn test_constants() {
@@ -47,7 +40,6 @@ mod tests {
 
         assert!(f128::NEG_INFINITY.is_infinite());
         assert!(!f128::NEG_INFINITY.is_finite());
-
     }
 
     #[test]
@@ -102,7 +94,9 @@ mod tests {
     }
 
     macro_rules! assert_approx_eq {
-        ($a:expr, $b:expr, $epsilon:expr) => ( assert!(($a - $b).abs() < $epsilon) )
+        ($a:expr, $b:expr, $epsilon:expr) => {
+            assert!(($a - $b).abs() < $epsilon)
+        };
     }
 
     const EPSILON: f128 = f128::EPSILON;
@@ -126,7 +120,7 @@ mod tests {
 
     #[test]
     fn test_casts_from_f128() {
-        use std::{f64, f32};
+        use std::{f32, f64};
         let oneandhalf = f128::parse("1.6").unwrap();
         assert_approx_eq!(1.6f64, oneandhalf.to_f64().unwrap(), f64::EPSILON);
         assert_approx_eq!(1.6f32, oneandhalf.to_f32().unwrap(), f32::EPSILON);
@@ -153,4 +147,3 @@ mod tests {
         assert!(a != b);
     }
 }
-
