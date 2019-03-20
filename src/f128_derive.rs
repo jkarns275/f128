@@ -20,16 +20,11 @@ impl Debug for f128 {
 
 impl Neg for f128 {
     type Output = Self;
-    #[cfg(target_endian = "little")]
-    fn neg(mut self) -> Self {
-        self.0[15] ^= 0x8;
-        self
-    }
 
-    #[cfg(target_endian = "big")]
     fn neg(mut self) -> Self {
-        self.0[0] ^= 0x8;
-        self
+        let mut bits = self.inner_as_u128();
+        bits ^= f128::SIGN_BIT.inner_as_u128();
+        f128::from_raw_u128(bits)
     }
 }
 
