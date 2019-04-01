@@ -457,26 +457,54 @@ impl Float for f128 {
     }
 
     fn signum(self) -> Self {
-        match self.0[0] & 0x80 {
-            0 => f128::INFINITY,
-            1 => f128::NEG_INFINITY,
-            _ => unreachable!()
+        if self == Self::NAN {
+            return self;
+        } else {
+            if self.is_sign_positive() {
+                Self::ONE
+            } else {
+                -Self::ONE
+            }
         }
     }
 
+    #[cfg(target_endian = "big")]
+    #[inline]
     fn is_sign_negative(self) -> bool {
         match self.0[0] & 0x80 {
-            0 => false,
-            1 => true,
-            _ => unreachable!()
+            0 => true,
+            0x80 => false,
+            _ => unreachable!(),
         }
     }
 
+    #[cfg(target_endian = "little")]
+    #[inline]
+    fn is_sign_negative(self) -> bool {
+        match self.0[15] & 0x80 {
+            0 => false,
+            0x80 => true,
+            _ => unreachable!(),
+        }
+    }
+
+    #[cfg(target_endian = "big")]
+    #[inline]
     fn is_sign_positive(self) -> bool {
         match self.0[0] & 0x80 {
-            1 => false,
             0 => true,
-            _ => unreachable!()
+            0x80 => false,
+            _ => unreachable!(),
+        }
+    }
+
+    #[cfg(target_endian = "little")]
+    #[inline]
+    fn is_sign_positive(self) -> bool {
+        match self.0[15] & 0x80 {
+            0 => true,
+            0x80 => false,
+            _ => unreachable!(),
         }
     }
 
