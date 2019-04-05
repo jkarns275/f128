@@ -6,7 +6,6 @@ use std::cmp::*;
 use std::convert::{From, Into};
 use std::ffi::CString;
 use std::fmt::{Debug, Error, Formatter};
-use std::hash::{Hash, Hasher};
 use std::iter::*;
 use std::mem;
 use std::ops::*;
@@ -297,17 +296,6 @@ impl<'a> Sum<&'a f128> for f128 {
 impl<'a> Product<&'a f128> for f128 {
     fn product<I: Iterator<Item = &'a f128>>(iter: I) -> f128 {
         iter.fold(1.into(), |a, b| a * *b)
-    }
-}
-
-impl Hash for f128 {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        state.write_i128(unsafe { mem::transmute::<[u8; 16], i128>(self.inner()) })
-    }
-    fn hash_slice<H: Hasher>(data: &[f128], state: &mut H) {
-        let newlen = data.len() * mem::size_of::<f128>();
-        let ptr = data.as_ptr() as *const u8;
-        state.write(unsafe { slice::from_raw_parts(ptr, newlen) })
     }
 }
 
