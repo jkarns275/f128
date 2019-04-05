@@ -2,7 +2,7 @@
 name = "f128_internal"
 version = "0.1.0"
 authors = ["Joshua Karns <jkarns275@gmail.com>"]
-build = "build.rs"
+# build = "build.rs"
 license = "MIT"
 description = "Internal bindings to the gcc quadmath library"
 repository = "https://github.com/jkarns275/f128"
