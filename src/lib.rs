@@ -11,6 +11,23 @@ mod tests {
     use std::num::FpCategory;
 
     #[test]
+    fn test_minus() {
+        let a = f128::from_f64(-4.).unwrap();
+        assert_eq!(a.is_finite(), true);
+        assert_eq!(a.is_infinite(), false);
+        assert_eq!(a.is_sign_negative(), true);
+        assert_eq!(a.is_sign_positive(), false);
+        assert_eq!(a.signum(), -f128::ONE);
+
+        let a = f128::from_f64(4.).unwrap();
+        assert_eq!(a.is_finite(), true);
+        assert_eq!(a.is_infinite(), false);
+        assert_eq!(a.is_sign_negative(), false);
+        assert_eq!(a.is_sign_positive(), true);
+        assert_eq!(a.signum(), f128::ONE);
+    }
+
+    #[test]
     fn test_constants() {
         let pi = f128::parse("3.1415926535897932384626433832795028841971693993751058").unwrap();
         let e = f128::parse("2.7182818284590452353602874713526624977572").unwrap();
