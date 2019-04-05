@@ -15,15 +15,6 @@ use std::num::FpCategory;
 use num_traits::*;
 use libc::c_int;
 
-macro_rules! f128_from_x {
-    ($x: ty, $n: expr, $it: expr) => ({
-        // 32 is ascii space, so this buff will be filled with spaces after the number
-        let mut buf: [u8; $n] = [32u8; $n];
-        write!(&mut buf[..], "{}", $it).expect("Failed to write integer to buffer");
-        f128::parse(str::from_utf8(&buf[..]).unwrap()).ok()
-    })
-}
-
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct f128(pub(crate) [u8; 16]);

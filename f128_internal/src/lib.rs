@@ -1,7 +1,13 @@
-extern crate f128_internal;
+#![allow(warnings)]
 extern crate num_traits;
+extern crate libc;
 
-pub use f128_internal::*;
+mod f128_derive;
+mod f128_t;
+pub mod ffi;
+
+pub use f128_t::*;
+pub use f128_derive::*;
 
 #[cfg(test)]
 mod tests {
