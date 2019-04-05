@@ -1,0 +1,11 @@
+[package]
+name = "f128_input"
+version = "0.1.0"
+authors = ["Joshua Karns <jkarns275@gmail.com>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+f128_internal = { path = "../f128_internal" }
