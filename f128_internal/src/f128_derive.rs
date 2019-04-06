@@ -64,7 +64,7 @@ macro_rules! shl_impl {
             fn shr(self, other: $f) -> f128 {
                 unsafe {
                     mem::transmute::<u128, f128>(
-                        mem::transmute::<[u8; 16], u128>(self.inner()) >> other
+                        mem::transmute::<[u8; 16], u128>(self.inner()) >> other,
                     )
                 }
             }
@@ -121,7 +121,7 @@ macro_rules! shl_impl {
             fn shl(self, other: $f) -> $t {
                 unsafe {
                     mem::transmute::<u128, f128>(
-                        mem::transmute::<[u8; 16], u128>(self.inner()) << other
+                        mem::transmute::<[u8; 16], u128>(self.inner()) << other,
                     )
                 }
             }
