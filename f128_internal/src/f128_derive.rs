@@ -4,12 +4,10 @@ use ffi::*;
 use std::cmp::Ordering::*;
 use std::cmp::*;
 use std::convert::{From, Into};
-use std::ffi::CString;
 use std::fmt::{Debug, Error, Formatter};
 use std::iter::*;
 use std::mem;
 use std::ops::*;
-use std::slice;
 
 impl Debug for f128 {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
@@ -20,7 +18,7 @@ impl Debug for f128 {
 impl Neg for f128 {
     type Output = Self;
 
-    fn neg(mut self) -> Self {
+    fn neg(self) -> Self {
         let mut bits = self.inner_as_u128();
         bits ^= f128::SIGN_BIT.inner_as_u128();
         f128::from_raw_u128(bits)
@@ -66,7 +64,7 @@ macro_rules! shl_impl {
             fn shr(self, other: $f) -> f128 {
                 unsafe {
                     mem::transmute::<u128, f128>(
-                        (mem::transmute::<[u8; 16], u128>(self.inner()) >> other),
+                        mem::transmute::<[u8; 16], u128>(self.inner()) >> other
                     )
                 }
             }
@@ -123,7 +121,7 @@ macro_rules! shl_impl {
             fn shl(self, other: $f) -> $t {
                 unsafe {
                     mem::transmute::<u128, f128>(
-                        (mem::transmute::<[u8; 16], u128>(self.inner()) << other),
+                        mem::transmute::<[u8; 16], u128>(self.inner()) << other
                     )
                 }
             }
@@ -304,24 +302,24 @@ macro_rules! impl_from_to {
         impl From<$ty> for f128 {
             #[inline]
             fn from(small: $ty) -> f128 {
-                unsafe { $from(small) }
+                unsafe { ::std::mem::transmute($from(::std::mem::transmute(small))) }
             }
         }
         impl Into<$ty> for f128 {
             #[inline]
             fn into(self) -> $ty {
-               unsafe { $to(self) }
+               unsafe { ::std::mem::transmute($to(::std::mem::transmute(self))) }
             }
         }
 
         impl F128 for $ty {
             #[inline]
             fn from_f128(x: f128) -> Self {
-                unsafe { $to(x) }
+                unsafe { ::std::mem::transmute($to(::std::mem::transmute(x))) }
             }
             #[inline]
             fn f128(self) -> f128 {
-                unsafe { $from(self) }
+                unsafe { ::std::mem::transmute($from(::std::mem::transmute(self))) }
             }
         }
 

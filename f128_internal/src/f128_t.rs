@@ -1,19 +1,12 @@
-use std::ops::*;
-use ffi;
 use ffi::*;
-use std::convert::{ From, Into };
-use std::iter::*;
-use std::hash::{ Hash, Hasher };
 use std::mem;
-use std::slice;
 use std::str;
-use std::io::Write;
 use std::ffi::CString;
 use std::ffi::NulError;
-use f128_derive::*;
 use std::num::FpCategory;
 use num_traits::*;
 use libc::c_int;
+
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -165,15 +158,6 @@ impl f128 {
     pub(crate) fn from_raw_u128(d: u128) -> Self {
         f128::from_arr(unsafe { mem::transmute::<u128, [u8; 16]>(d) })
     }
-    #[inline(always)]
-    pub(crate) fn from_raw_i128(d: i128) -> Self {
-        f128::from_arr(unsafe { mem::transmute::<i128, [u8; 16]>(d) })
-    }
-
-    #[inline(always)]
-    pub(crate) fn inner_as_i128(self) -> i128 {
-        unsafe { mem::transmute::<[u8; 16], i128>(self.0) }
-    }
 
     #[inline(always)]
     pub(crate) fn inner_as_u128(&self) -> u128 {
@@ -212,7 +196,6 @@ impl f128 {
 
     pub fn parse<T: AsRef<str>>(s: T) -> Result<Self, NulError> {
         let cstr = CString::new(s.as_ref())?;
-        let result = unsafe { strtoflt128_f(cstr.as_ptr()) };
 
         Ok(unsafe { strtoflt128_f(cstr.as_ptr()) })
     }
@@ -274,10 +257,10 @@ impl ToPrimitive for f128 {
         Some(unsafe { f128_to_f64(*self) })
     }
     fn to_i128(&self)   -> Option<i128> {
-        Some(unsafe { f128_to_i128(*self) })
+        Some(unsafe { mem::transmute(f128_to_i128(*self)) })
     }
     fn to_u128(&self)   -> Option<u128> {
-        Some(unsafe { f128_to_u128(*self) })
+        Some(unsafe { mem::transmute(f128_to_u128(*self)) })
     }
 }
 
@@ -356,7 +339,7 @@ impl FromPrimitive for f128 {
 
 impl Num for f128 {
     type FromStrRadixErr = ();
-    fn from_str_radix(s: &str, radix: u32) -> Result<Self, ()> {
+    fn from_str_radix(_s: &str, _radix: u32) -> Result<Self, ()> {
         unimplemented!()
     }
 }
@@ -391,7 +374,7 @@ impl Float for f128 {
     fn is_infinite(self) -> bool {
         // It's fine to compare the bits here since there is only 1 bit pattern that is inf, and one
         // that is -inf.
-        let res = (self.inner_as_u128() & 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128);
+        let res = self.inner_as_u128() & 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128;
         res == f128::EXPONENT_BITS.inner_as_u128()
     }
 
@@ -411,7 +394,6 @@ impl Float for f128 {
             (false, true, false) => FpCategory::Subnormal,
             (_, _, true) => FpCategory::Nan,
             (_, false, _) => FpCategory::Infinite,
-            _ => unreachable!()
         }
     }
 
@@ -510,7 +492,7 @@ impl Float for f128 {
     fn powi(self, n: i32) -> f128 {
         let mut i = self.clone();
         if n == 0 { return f128::ONE };
-        if (n < 0) {
+        if n < 0 {
             for _ in n as i64 - 1..0 {
                 i /= self;
             }

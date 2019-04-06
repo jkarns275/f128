@@ -24,8 +24,8 @@ extern "C" {
     pub fn f128_to_u32	(x: f128) -> u32;
     pub fn u64_to_f128	(x: u64) -> f128;
     pub fn f128_to_u64	(x: f128) -> u64;
-    pub fn u128_to_f128	(x: u128) -> f128;
-    pub fn f128_to_u128	(x: f128) -> u128;
+    pub fn u128_to_f128	(x: [u8; 16]) -> f128;
+    pub fn f128_to_u128	(x: f128) -> [u8; 16];
     pub fn isize_to_f128	(x: isize) -> f128;
     pub fn f128_to_isize	(x: f128) -> isize;
     pub fn i8_to_f128	(x: i8) -> f128;
@@ -36,8 +36,8 @@ extern "C" {
     pub fn f128_to_i32	(x: f128) -> i32;
     pub fn i64_to_f128	(x: i64) -> f128;
     pub fn f128_to_i64	(x: f128) -> i64;
-    pub fn i128_to_f128	(x: i128) -> f128;
-    pub fn f128_to_i128(x: f128) -> i128;
+    pub fn i128_to_f128	(x: [u8; 16]) -> f128;
+    pub fn f128_to_i128(x: f128) -> [u8; 16];
     pub fn f32_to_f128	(x: f32) -> f128;
     pub fn f128_to_f32	(x: f128) -> f32;
     pub fn f64_to_f128	(x: f64) -> f128;
