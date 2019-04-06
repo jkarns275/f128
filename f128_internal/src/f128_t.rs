@@ -208,6 +208,10 @@ impl f128 {
     pub fn fract_bits(&self) -> u128 {
         self.inner_as_u128() & f128::FRACTION_BITS.inner_as_u128()
     }
+
+    pub fn bitwise_eq(self, other: Self) -> bool {
+        self.0 == other.0
+    }
 }
 
 impl Zero for f128 {
