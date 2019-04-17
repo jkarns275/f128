@@ -237,7 +237,7 @@ impl f128 {
 
 impl Zero for f128 {
     fn is_zero(&self) -> bool {
-        self.0 == f128::ZERO.0
+        self.0 == f128::ZERO.0 || self.0 == f128::NEG_ZERO.0
     }
     fn zero() -> Self {
         f128::ZERO
