@@ -349,11 +349,7 @@ impl Num for f128 {
 
 impl NumCast for f128 {
     fn from<T: ToPrimitive>(n: T) -> Option<Self> {
-        let int_comp = f128::from_i128(n.to_i128().expect("This should never happen."))
-            .expect("This shouldnt happen either.");
-        let frac_comp = f128::from_f64(n.to_f64().expect("This also shouldnt happen either."))
-            .expect("This shouldnt happen.");
-        Some((frac_comp - int_comp) + int_comp)
+        f128::from_f64(n.to_f64().unwrap())
     }
 }
 
