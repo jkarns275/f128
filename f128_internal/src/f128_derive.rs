@@ -260,34 +260,21 @@ forward_ref_assignop! { impl DivAssign, div_assign for f128, f128 }
 impl Rem<f128> for f128 {
     type Output = f128;
 
+    #[inline]
     fn rem(self, other: f128) -> f128 {
         unsafe { ffi::fmodq_f(self, other) }
     }
 }
 
-impl<'a> Rem<&'a f128> for f128 {
-    type Output = f128;
-
-    fn rem(self, other: &'a f128) -> f128 {
-        unsafe { ffi::fmodq_f(self, *other) }
+impl RemAssign for f128 {
+    #[inline]
+    fn rem_assign(&mut self, other: f128) {
+        *self = *self % other
     }
 }
 
-impl<'a, 'b> Rem<&'a f128> for &'b f128 {
-    type Output = f128;
-
-    fn rem(self, other: &'a f128) -> f128 {
-        unsafe { ffi::fmodq_f(*self, *other) }
-    }
-}
-
-impl<'a> Rem<f128> for &'a f128 {
-    type Output = f128;
-
-    fn rem(self, other: f128) -> f128 {
-        unsafe { ffi::fmodq_f(*self, other) }
-    }
-}
+forward_ref_binop! { impl Rem, rem for f128, f128 }
+forward_ref_assignop! { impl RemAssign, rem_assign for f128, f128 }
 
 impl Sum for f128 {
     fn sum<I: Iterator<Item = f128>>(iter: I) -> f128 {
