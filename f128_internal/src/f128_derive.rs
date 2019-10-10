@@ -55,6 +55,18 @@ macro_rules! forward_ref_binop {
     };
 }
 
+macro_rules! forward_ref_assignop {
+    (impl $imp:ident, $method:ident for $t:ty, $u:ty) => {
+        impl<'a> $imp<&'a $u> for $t {
+
+            #[inline]
+            fn $method(&mut self, other: &'a $u) {
+                $imp::$method(self, *other)
+            }
+        }
+    };
+}
+
 macro_rules! shl_impl {
     ($t:ty, $f:ty) => {
         impl Shr<$f> for $t {
@@ -186,6 +198,7 @@ impl AddAssign for f128 {
 }
 
 forward_ref_binop! { impl Add, add for f128, f128 }
+forward_ref_assignop! { impl AddAssign, add_assign for f128, f128 }
 
 impl Sub for f128 {
     type Output = f128;
@@ -204,6 +217,7 @@ impl SubAssign for f128 {
 }
 
 forward_ref_binop! { impl Sub, sub for f128, f128 }
+forward_ref_assignop! { impl SubAssign, sub_assign for f128, f128 }
 
 impl Mul for f128 {
     type Output = f128;
@@ -222,6 +236,7 @@ impl MulAssign for f128 {
 }
 
 forward_ref_binop! { impl Mul, mul for f128, f128 }
+forward_ref_assignop! { impl MulAssign, mul_assign for f128, f128 }
 
 impl Div for f128 {
     type Output = f128;
@@ -240,6 +255,7 @@ impl DivAssign for f128 {
 }
 
 forward_ref_binop! { impl Div, div for f128, f128 }
+forward_ref_assignop! { impl DivAssign, div_assign for f128, f128 }
 
 impl Rem<f128> for f128 {
     type Output = f128;
