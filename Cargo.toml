@@ -1,6 +1,6 @@
 [package]
 name = "f128"
-version = "0.2.3"
+version = "0.2.4"
 authors = ["Joshua Karns <jkarns275@gmail.com>"]
 license = "MIT"
 description = "Bindings to the gcc quadmath library"
