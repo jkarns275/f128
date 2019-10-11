@@ -10,4 +10,4 @@ repository = "https://github.com/jkarns275/f128"
 num-traits = "0.2.6"
 libc = "0.2"
 f128_internal = { path = "f128_internal", version = "0.2.0" }
-f128_input = { path = "f128_input", version = "0.1.0" }
+f128_input = { path = "f128_input", version = "0.2.0" }
