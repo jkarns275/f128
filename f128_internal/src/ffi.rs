@@ -80,7 +80,8 @@ extern "C" {
     pub fn lgammaq_f(a: f128) -> f128;
     pub fn llrintq_f(a: f128) -> c_longlong;
     pub fn llroundq_f(a: f128) -> c_longlong;
-    pub fn logbq_f(a: f128) -> f128;
+    // UNUSED
+    // pub fn logbq_f(a: f128) -> f128;
     pub fn logq_f(a: f128) -> f128;
     pub fn log10q_f(a: f128) -> f128;
     pub fn log2q_f(a: f128) -> f128;

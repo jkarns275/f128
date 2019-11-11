@@ -217,9 +217,11 @@ void f128_to_str(Wrapper a, size_t n, char* buf, const char* format) {
   return llroundq(a.value);
 }
 
+/*
  Wrapper logbq_f (Wrapper a) {
   return (Wrapper) { logbq(a.value) };
 }
+*/
  Wrapper logq_f (Wrapper a) {
    return (Wrapper) { logq(a.value) };
 }
