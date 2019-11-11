@@ -1,6 +1,6 @@
 [package]
 name = "f128_internal"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Joshua Karns <jkarns275@gmail.com>"]
 # build = "build.rs"
 license = "MIT"
