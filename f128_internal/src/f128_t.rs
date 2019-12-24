@@ -399,7 +399,7 @@ impl Float for f128 {
     }
 
     fn is_normal(self) -> bool {
-        // Normal is defined as having an exponent of 0
+        // Normal is defined as having an exponent not equal to 0
         self.exp_bits() != 0
     }
 
