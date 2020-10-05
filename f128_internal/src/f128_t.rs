@@ -399,6 +399,11 @@ impl Float for f128 {
             > f128::EXPONENT_BITS.inner_as_u128()
     }
 
+    #[inline]
+    fn epsilon() -> Self {
+        f128::EPSILON
+    }
+
     fn is_normal(self) -> bool {
         // Normal is defined as having an exponent not equal to 0
         self.exp_bits() != 0
