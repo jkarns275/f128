@@ -156,17 +156,18 @@ impl f128 {
     #[cfg(target_endian = "big")]
     pub const NEG_ZERO: f128 = f128([0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
-    #[cfg(target_endian = "little")]
+    #[cfg(target_endian = "big")]
     pub const MAX: f128 = f128([
         0x7f, 0xfe, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
         0xff,
     ]);
-    #[cfg(target_endian = "big")]
+    #[cfg(target_endian = "little")]
     pub const MAX: f128 = f128([
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe,
         0x7f,
     ]);
 
+    #[inline(always)]
     pub(crate) fn from_arr(d: [u8; 16]) -> Self {
         f128(d)
     }

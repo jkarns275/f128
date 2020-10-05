@@ -24,7 +24,6 @@ mod tests {
     #[test]
     fn test_minus() {
         let a = f128!(-4.0);
-        println!("{}", a.to_string());
         assert_eq!(a.is_finite(), true);
         assert_eq!(a.is_infinite(), false);
         assert_eq!(a.is_sign_negative(), true);
@@ -59,9 +58,24 @@ mod tests {
 
         assert!(f128::INFINITY.is_infinite());
         assert!(!f128::INFINITY.is_finite());
+        assert!(!f128::INFINITY.is_sign_negative());
 
         assert!(f128::NEG_INFINITY.is_infinite());
         assert!(!f128::NEG_INFINITY.is_finite());
+        assert!(f128::NEG_INFINITY.is_sign_negative());
+        
+        assert!(!f128::MAX.is_nan());
+        assert!(f128::MAX.is_finite());
+        
+        assert!(!f128::MIN.is_nan());
+        assert!(f128::MIN.is_finite());
+
+        assert!(f128::MIN_POSITIVE.is_finite());
+        assert!(!f128::MIN_POSITIVE.is_nan());
+
+        assert!(f128::MIN_POSITIVE.is_finite());
+        assert!(!f128::MIN_POSITIVE.is_nan());
+
     }
 
     #[test]
