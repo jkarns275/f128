@@ -2,6 +2,9 @@ use f128_t::f128;
 use libc::c_int;
 use libc::c_longlong;
 
+#[repr(C)]
+pub(crate) struct Wrapper([u8; 16]);
+
 #[link(name = "f128", kind = "static")]
 extern "C" {
     pub fn f128_add(x: f128, y: f128) -> f128;
@@ -14,34 +17,34 @@ extern "C" {
 
     pub fn strtoflt128_f(c: *const i8) -> f128;
 
-    pub fn usize_to_f128(x: usize) -> f128;
-    pub fn f128_to_usize(x: f128) -> usize;
-    pub fn u8_to_f128(x: u8) -> f128;
-    pub fn f128_to_u8(x: f128) -> u8;
-    pub fn u16_to_f128(x: u16) -> f128;
-    pub fn f128_to_u16(x: f128) -> u16;
-    pub fn u32_to_f128(x: u32) -> f128;
-    pub fn f128_to_u32(x: f128) -> u32;
-    pub fn u64_to_f128(x: u64) -> f128;
-    pub fn f128_to_u64(x: f128) -> u64;
-    pub fn u128_to_f128(x: [u8; 16]) -> f128;
-    pub fn f128_to_u128(x: f128) -> [u8; 16];
-    pub fn isize_to_f128(x: isize) -> f128;
-    pub fn f128_to_isize(x: f128) -> isize;
-    pub fn i8_to_f128(x: i8) -> f128;
-    pub fn f128_to_i8(x: f128) -> i8;
-    pub fn i16_to_f128(x: i16) -> f128;
-    pub fn f128_to_i16(x: f128) -> i16;
-    pub fn i32_to_f128(x: i32) -> f128;
-    pub fn f128_to_i32(x: f128) -> i32;
-    pub fn i64_to_f128(x: i64) -> f128;
-    pub fn f128_to_i64(x: f128) -> i64;
-    pub fn i128_to_f128(x: [u8; 16]) -> f128;
-    pub fn f128_to_i128(x: f128) -> [u8; 16];
-    pub fn f32_to_f128(x: f32) -> f128;
-    pub fn f128_to_f32(x: f128) -> f32;
-    pub fn f64_to_f128(x: f64) -> f128;
-    pub fn f128_to_f64(x: f128) -> f64;
+    pub(crate) fn usize_to_f128(x: usize) -> f128;
+    pub(crate) fn f128_to_usize(x: f128) -> usize;
+    pub(crate) fn u8_to_f128(x: u8) -> f128;
+    pub(crate) fn f128_to_u8(x: f128) -> u8;
+    pub(crate) fn u16_to_f128(x: u16) -> f128;
+    pub(crate) fn f128_to_u16(x: f128) -> u16;
+    pub(crate) fn u32_to_f128(x: u32) -> f128;
+    pub(crate) fn f128_to_u32(x: f128) -> u32;
+    pub(crate) fn u64_to_f128(x: u64) -> f128;
+    pub(crate) fn f128_to_u64(x: f128) -> u64;
+    pub(crate) fn u128_to_f128(x: Wrapper) -> f128;
+    pub(crate) fn f128_to_u128(x: f128) -> Wrapper;
+    pub(crate) fn isize_to_f128(x: isize) -> f128;
+    pub(crate) fn f128_to_isize(x: f128) -> isize;
+    pub(crate) fn i8_to_f128(x: i8) -> f128;
+    pub(crate) fn f128_to_i8(x: f128) -> i8;
+    pub(crate) fn i16_to_f128(x: i16) -> f128;
+    pub(crate) fn f128_to_i16(x: f128) -> i16;
+    pub(crate) fn i32_to_f128(x: i32) -> f128;
+    pub(crate) fn f128_to_i32(x: f128) -> i32;
+    pub(crate) fn i64_to_f128(x: i64) -> f128;
+    pub(crate) fn f128_to_i64(x: f128) -> i64;
+    pub(crate) fn i128_to_f128(x: Wrapper) -> f128;
+    pub(crate) fn f128_to_i128(x: f128) -> Wrapper;
+    pub(crate) fn f32_to_f128(x: f32) -> f128;
+    pub(crate) fn f128_to_f32(x: f128) -> f32;
+    pub(crate) fn f64_to_f128(x: f64) -> f128;
+    pub(crate) fn f128_to_f64(x: f128) -> f64;
 
     pub fn acosq_f(x: f128) -> f128;
     pub fn acosn_f(a: f128) -> f128;
