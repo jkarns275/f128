@@ -1,11 +1,11 @@
 extern crate libc;
 extern crate num_traits;
 
-mod f128_derive;
+mod f128_impl;
 mod f128_t;
 pub mod ffi;
 
-pub use f128_derive::*;
+pub use f128_impl::*;
 pub use f128_t::*;
 
 #[cfg(test)]
