@@ -136,7 +136,6 @@ mod tests {
         let pi = f128::PI;
         let one = f128::ONE;
         let half = f128!(0.5);
-        let zero = f128::from_u8(0).unwrap();
         let min = f128::MIN_POSITIVE;
 
         assert_eq!(half.classify(), FpCategory::Normal);

@@ -25,10 +25,11 @@ impl fmt::Display for f128 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let format = 
             if let Some(precision) = f.precision() {
-                format!("%.{}g", precision)
+                format!("%.{}Qg", precision)
             } else {
-                "%g".to_string()
+                "%Qg".to_string()
             };
+        
         match self.to_string_fmt(format.as_str()) {
             Some(s) => write!(f, "{}", s),
             None => Err(fmt::Error),

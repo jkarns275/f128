@@ -198,11 +198,10 @@ impl f128 {
             Err(_) => return None,
         };
         let n = unsafe { qtostr((&mut buf).as_mut_ptr(), 128, cstr.as_ptr(), self.clone()) };
-        let mut v = Vec::with_capacity(n as usize);
-        for i in 0..n {
-            v.push(buf[i as usize]);
-        }
-        Some(String::from_utf8(v).unwrap())
+        assert!(n > 0);
+        let n = n as usize;
+        let s = str::from_utf8(&buf[..n]).unwrap();
+        Some(s.to_string())
     }
 
     #[inline(always)]
