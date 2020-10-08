@@ -21,6 +21,59 @@ mod tests {
     use num_traits::*;
     use std::num::FpCategory;
 
+    // Utility functions used to create constants in the form of byte arrays. 
+    // Only made to run on little endian systems.
+    #[cfg(target_endian = "little")]
+    fn le_bytes(f: [u8; 16]) -> String {
+        let mut s = String::new();
+        s.push('[');
+        for i in 0..15 {
+            s += format!("0x{:02X}, ", f[i]).as_ref();
+        }
+        s += format!("0x{:02X}]", f[15]).as_ref();
+        s
+    }
+
+    #[cfg(target_endian = "little")]
+    fn be_bytes(f: [u8; 16]) -> String {
+        let mut s = String::new();
+        s.push('[');
+        for i in 0..15 {
+            s += format!("0x{:02X}, ", f[15 - i]).as_ref();
+        }
+        s += format!("0x{:02X}]", f[0]).as_ref();
+        s
+    }
+
+    fn print_constant(name: &str, value: f128) {
+        let le_bytes_string = le_bytes(value.into_inner());
+        let be_bytes_string = be_bytes(value.into_inner());
+        println!("    #[cfg(target_endian = \"little\")]");
+        println!("    fn {}() -> f128 {{ f128({}) }}", name, le_bytes_string);
+        println!("    #[cfg(target_endian = \"big\")]");
+        println!("    fn {}() -> f128 {{ f128({}) }}\n", name, be_bytes_string);
+    }
+
+    #[test]
+    fn print_constants() {
+        print_constant("E", f128::E);
+        print_constant("FRAC_1_PI", f128::ONE / f128::PI);
+        print_constant("FRAC_1_SQRT_2", f128::ONE / f128::TWO.sqrt());
+        print_constant("FRAC_2_PI", f128::TWO / f128::PI);
+        print_constant("FRAC_2_SQRT_PI", f128::TWO / f128::PI.sqrt());
+        print_constant("FRAC_PI_2", f128::PI / f128::TWO);
+        print_constant("FRAC_PI_3", f128::PI / f128!(3.0));
+        print_constant("FRAC_PI_4", f128::PI / f128!(4.0));
+        print_constant("FRAC_PI_6", f128::PI / f128!(6.0));
+        print_constant("FRAC_PI_8", f128::PI / f128!(8.0));
+        print_constant("LN_10", f128!(10.0).ln());
+        print_constant("LN_2", f128!(2.0).ln());
+        print_constant("LOG10_E", f128::E.log10());
+        print_constant("LOG2_E", f128::E.log2());
+        print_constant("PI", f128::PI);
+        print_constant("SQRT_2", f128::TWO.sqrt());
+    }
+
     #[test]
     fn test_minus() {
         let a = f128!(-4.0);
