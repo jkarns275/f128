@@ -148,6 +148,25 @@ mod tests {
     }
 
     #[test]
+    fn test_is_normal() {
+        let min = f128::MIN_POSITIVE;
+        let max = f128::MAX;
+        let zero = 0.0f32;
+        let one = f128::ONE;
+        let minone = -f128::ONE;
+
+        assert!(one.is_normal());
+        assert!(minone.is_normal());
+        assert!(min.is_normal()); // fails
+        assert!(max.is_normal()); //fails
+
+        assert!(!zero.is_normal());
+        assert!(!f128::NAN.is_normal());
+        assert!(!f128::INFINITY.is_normal());
+    }
+
+
+    #[test]
     fn test_f128_to_primitive() {
         let a = f128!(1003.0);
 

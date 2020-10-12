@@ -291,7 +291,8 @@ impl Float for f128 {
 
     fn is_normal(self) -> bool {
         // Normal is defined as having an exponent not equal to 0
-        self.exp_bits() != 0
+        let exp_bits = self.exp_bits();
+        self.inner_as_u128() == 0 || (exp_bits != 0 && exp_bits != 0x7FFF)
     }
 
     fn classify(self) -> FpCategory {
