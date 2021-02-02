@@ -1,4 +1,3 @@
-#![feature(proc_macro_hygiene)]
 extern crate f128_internal;
 extern crate f128_input;
 extern crate num_traits;
