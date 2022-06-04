@@ -10,7 +10,7 @@ typedef union _Wrapper {
   f128 value;
   unsigned __int128 dat;
   char dat_alt[16];
-} Wrapper;
+} __attribute__ ((aligned (16))) Wrapper;
 
 Wrapper strtoflt128_f(const char *s) {
   return (Wrapper) { strtoflt128(s, NULL) };
