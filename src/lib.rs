@@ -13,12 +13,18 @@ macro_rules! f128 {
     [$f:expr; $l:expr] => ([f128_inner!($f); $l]);
 }
 
+
 #[cfg(test)]
 mod tests {
 
     use super::*;
     use num_traits::*;
     use std::num::FpCategory;
+
+    #[test]
+    fn test_align() {
+        assert_eq!(std::mem::align_of::<f128>(), 16);
+    }
 
     // Utility functions used to create constants in the form of byte arrays. 
     // Only made to run on little endian systems.

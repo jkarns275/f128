@@ -6,7 +6,7 @@ use std::str;
 use ffi::*;
 
 
-#[repr(C)]
+#[repr(C, align(16))]
 #[derive(Clone, Copy)]
 pub struct f128(pub(crate) [u8; 16]);
 
