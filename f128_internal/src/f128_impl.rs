@@ -275,13 +275,13 @@ impl Float for f128 {
     fn is_infinite(self) -> bool {
         // It's fine to compare the bits here since there is only 1 bit pattern that is inf, and one
         // that is -inf.
-        let res = self.inner_as_u128() & 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128;
-        res == f128::EXPONENT_BITS.inner_as_u128()
+        let res = self.to_bits() & 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128;
+        res == f128::EXPONENT_BITS.to_bits()
     }
 
     fn is_nan(self) -> bool {
-        (self.inner_as_u128() & 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128)
-            > f128::EXPONENT_BITS.inner_as_u128()
+        (self.to_bits() & 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFu128)
+            > f128::EXPONENT_BITS.to_bits()
     }
 
     #[inline]
@@ -290,18 +290,24 @@ impl Float for f128 {
     }
 
     fn is_normal(self) -> bool {
-        // Normal is defined as having an exponent not equal to 0
+        // Normal is defined as having an exponent not equal to 0 and being finite
         let exp_bits = self.exp_bits();
-        self.inner_as_u128() == 0 || (exp_bits != 0 && exp_bits != 0x7FFF)
+        exp_bits != 0 && exp_bits != 0x7FFF
     }
 
     fn classify(self) -> FpCategory {
-        let x = (self.is_normal(), self.is_finite(), self.is_nan());
-        match x {
-            (true, true, false) => FpCategory::Normal,
-            (false, true, false) => FpCategory::Subnormal,
-            (_, _, true) => FpCategory::Nan,
-            (_, false, _) => FpCategory::Infinite,
+        if self.is_infinite() {
+            FpCategory::Infinite
+        } else if self.is_nan() {
+            FpCategory::Nan
+        } else {
+            let exp_bits = self.exp_bits();
+            let mant_bits = self.fract_bits();
+            match (exp_bits, mant_bits) {
+                (0, 0) => FpCategory::Zero,
+                (0, _) => FpCategory::Subnormal,
+                (_, _) => FpCategory::Normal,
+            }
         }
     }
 
@@ -338,8 +344,8 @@ impl Float for f128 {
     }
 
     fn signum(self) -> Self {
-        if self == Self::NAN {
-            return self;
+        if self.is_nan() {
+            Self::NAN
         } else {
             if self.is_sign_positive() {
                 Self::ONE
@@ -551,9 +557,9 @@ impl Neg for f128 {
     type Output = Self;
 
     fn neg(self) -> Self {
-        let mut bits = self.inner_as_u128();
-        bits ^= f128::SIGN_BIT.inner_as_u128();
-        f128::from_raw_u128(bits)
+        let mut bits = self.to_bits();
+        bits ^= f128::SIGN_BIT.to_bits();
+        f128::from_bits(bits)
     }
 }
 
