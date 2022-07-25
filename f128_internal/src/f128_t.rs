@@ -185,12 +185,12 @@ impl f128 {
     }
 
     #[inline(always)]
-    pub(crate) fn from_raw_u128(d: u128) -> Self {
+    pub fn from_bits(d: u128) -> Self {
         f128::from_arr(unsafe { mem::transmute::<u128, [u8; 16]>(d) })
     }
 
     #[inline(always)]
-    pub(crate) fn inner_as_u128(&self) -> u128 {
+    pub fn to_bits(self) -> u128 {
         unsafe { mem::transmute::<[u8; 16], u128>(self.0) }
     }
 
@@ -234,12 +234,12 @@ impl f128 {
     }
 
     pub fn exp_bits(&self) -> u32 {
-        let exp_bits = f128::EXPONENT_BITS.inner_as_u128();
-        ((self.inner_as_u128() & exp_bits) >> 112) as u32
+        let exp_bits = f128::EXPONENT_BITS.to_bits();
+        ((self.to_bits() & exp_bits) >> 112) as u32
     }
 
     pub fn fract_bits(&self) -> u128 {
-        self.inner_as_u128() & f128::FRACTION_BITS.inner_as_u128()
+        self.to_bits() & f128::FRACTION_BITS.to_bits()
     }
 
     pub fn bitwise_eq(self, other: Self) -> bool {
