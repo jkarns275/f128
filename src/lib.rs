@@ -149,11 +149,15 @@ mod tests {
         let one = f128::ONE;
         let half = f128!(0.5);
         let min = f128::MIN_POSITIVE_SUBNORMAL;
+        let zero = f128::ZERO;
+        let minzero = f128::NEG_ZERO;
 
         assert_eq!(half.classify(), FpCategory::Normal);
         assert_eq!(one.classify(), FpCategory::Normal);
         assert_eq!(pi.classify(), FpCategory::Normal);
         assert_eq!(min.classify(), FpCategory::Subnormal);
+        assert_eq!(zero.classify(), FpCategory::Zero);
+        assert_eq!(minzero.classify(), FpCategory::Zero);
         assert_eq!(f128::INFINITY.classify(), FpCategory::Infinite);
         assert_eq!(f128::NEG_INFINITY.classify(), FpCategory::Infinite);
         assert_eq!(f128::NAN.classify(), FpCategory::Nan);

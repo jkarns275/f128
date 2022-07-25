@@ -296,12 +296,18 @@ impl Float for f128 {
     }
 
     fn classify(self) -> FpCategory {
-        let x = (self.is_normal(), self.is_finite(), self.is_nan());
-        match x {
-            (true, true, false) => FpCategory::Normal,
-            (false, true, false) => FpCategory::Subnormal,
-            (_, _, true) => FpCategory::Nan,
-            (_, false, _) => FpCategory::Infinite,
+        if self.is_infinite() {
+            FpCategory::Infinite
+        } else if self.is_nan() {
+            FpCategory::Nan
+        } else {
+            let exp_bits = self.exp_bits();
+            let mant_bits = self.fract_bits();
+            match (exp_bits, mant_bits) {
+                (0, 0) => FpCategory::Zero,
+                (0, _) => FpCategory::Subnormal,
+                (_, _) => FpCategory::Normal,
+            }
         }
     }
 
