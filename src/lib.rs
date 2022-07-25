@@ -153,6 +153,27 @@ mod tests {
     }
 
     #[test]
+    fn test_signum() {
+        let inf = f128::INFINITY;
+        let mininf = f128::NEG_INFINITY;
+        let nan = f128::NAN;
+        let minnan = -f128::NAN;
+        let zero = f128::ZERO;
+        let minzero = f128::NEG_ZERO;
+        let one = f128::ONE;
+        let minone = -f128::ONE;
+
+        assert_eq!(inf.signum(), one);
+        assert_eq!(mininf.signum(), minone);
+        assert!(nan.signum().is_nan());
+        assert!(minnan.signum().is_nan());
+        assert_eq!(zero.signum(), one);
+        assert_eq!(minzero.signum(), minone);
+        assert_eq!(one.signum(), one);
+        assert_eq!(minone.signum(), minone);
+    }
+
+    #[test]
     fn test_is_normal() {
         let min = f128::MIN_POSITIVE;
         let max = f128::MAX;

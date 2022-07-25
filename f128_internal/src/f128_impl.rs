@@ -338,8 +338,8 @@ impl Float for f128 {
     }
 
     fn signum(self) -> Self {
-        if self == Self::NAN {
-            return self;
+        if self.is_nan() {
+            Self::NAN
         } else {
             if self.is_sign_positive() {
                 Self::ONE
