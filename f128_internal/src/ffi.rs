@@ -2,7 +2,7 @@ use f128_t::f128;
 use libc::c_int;
 use libc::c_longlong;
 
-#[repr(C)]
+#[repr(C, align(16))]
 pub(crate) struct Wrapper([u8; 16]);
 
 #[link(name = "f128", kind = "static")]
