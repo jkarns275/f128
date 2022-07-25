@@ -129,11 +129,18 @@ mod tests {
         assert!(f128::MIN.is_finite());
 
         assert!(f128::MIN_POSITIVE.is_finite());
+        assert!(f128::MIN_POSITIVE.is_normal());
         assert!(!f128::MIN_POSITIVE.is_nan());
 
-        assert!(f128::MIN_POSITIVE.is_finite());
-        assert!(!f128::MIN_POSITIVE.is_nan());
+        assert!(f128::MIN_POSITIVE_SUBNORMAL.is_finite());
+        assert!(!f128::MIN_POSITIVE_SUBNORMAL.is_normal());
+        assert!(!f128::MIN_POSITIVE_SUBNORMAL.is_nan());
 
+        assert!(!f128::ZERO.is_normal());
+        assert!(!f128::ZERO.is_infinite());
+        assert!(!f128::ZERO.is_nan());
+        assert!(f128::ZERO.is_finite());
+        assert!(f128::ZERO.is_zero());
     }
 
     #[test]
@@ -177,16 +184,18 @@ mod tests {
     fn test_is_normal() {
         let min = f128::MIN_POSITIVE;
         let max = f128::MAX;
-        let zero = 0.0f32;
+        let zero = f128::ZERO;
+        let minzero = f128::NEG_ZERO;
         let one = f128::ONE;
         let minone = -f128::ONE;
 
         assert!(one.is_normal());
         assert!(minone.is_normal());
-        assert!(min.is_normal()); // fails
-        assert!(max.is_normal()); //fails
+        assert!(min.is_normal());
+        assert!(max.is_normal());
 
         assert!(!zero.is_normal());
+        assert!(!minzero.is_normal());
         assert!(!f128::NAN.is_normal());
         assert!(!f128::INFINITY.is_normal());
     }
