@@ -553,6 +553,12 @@ impl Float for f128 {
     }
 }
 
+impl f128 {
+    pub fn is_subnormal(&self) -> bool {
+        self.classify() == FpCategory::Subnormal
+    }
+}
+
 impl Neg for f128 {
     type Output = Self;
 
