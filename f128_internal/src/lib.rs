@@ -13,7 +13,7 @@ mod tests {
 
     use super::*;
     use num_traits::*;
-    use std::num::FpCategory;
+    use std::{num::FpCategory, cmp::Ordering};
 
     #[test]
     fn test_minus() {
@@ -178,5 +178,40 @@ mod tests {
         assert!(b > a);
         assert!(b >= a);
         assert!(a != b);
+    }
+
+    #[test]
+    fn test_total_cmp() {
+        let a = f128::parse("-1.5").unwrap();
+        let b = f128::parse("1.5").unwrap();
+        let c = f128::parse("3.0").unwrap();
+
+        assert_eq!(a.total_cmp(&a), Ordering::Equal);
+        assert_eq!(a.total_cmp(&b), Ordering::Less);
+        assert_eq!(a.total_cmp(&c), Ordering::Less);
+        assert_eq!(b.total_cmp(&a), Ordering::Greater);
+        assert_eq!(b.total_cmp(&b), Ordering::Equal);
+        assert_eq!(b.total_cmp(&c), Ordering::Less);
+        assert_eq!(c.total_cmp(&a), Ordering::Greater);
+        assert_eq!(c.total_cmp(&b), Ordering::Greater);
+        assert_eq!(c.total_cmp(&c), Ordering::Equal);
+
+        let nan = f128::NAN;
+        let minnan = -f128::NAN;
+        let inf = f128::INFINITY;
+        let mininf = f128::NEG_INFINITY;
+
+        assert_eq!(nan.total_cmp(&nan), Ordering::Equal);
+        assert_eq!(nan.total_cmp(&minnan), Ordering::Greater);
+        assert_eq!(minnan.total_cmp(&nan), Ordering::Less);
+        assert_eq!(minnan.total_cmp(&minnan), Ordering::Equal);
+        assert_eq!(nan.total_cmp(&inf), Ordering::Greater);
+        assert_eq!(nan.total_cmp(&mininf), Ordering::Greater);
+        assert_eq!(minnan.total_cmp(&inf), Ordering::Less);
+
+        assert_eq!(nan.total_cmp(&a), Ordering::Greater);
+        assert_eq!(minnan.total_cmp(&a), Ordering::Less);
+        assert_eq!(inf.total_cmp(&a), Ordering::Greater);
+        assert_eq!(mininf.total_cmp(&a), Ordering::Less);
     }
 }

@@ -557,6 +557,20 @@ impl f128 {
     pub fn is_subnormal(&self) -> bool {
         self.classify() == FpCategory::Subnormal
     }
+
+    /// Return the ordering between `self` and `other` in accordance to
+    /// the `totalOrder` predicate as defined in the IEEE 754 (2008 revision),
+    /// as implemented in `core` for `f32` and `f64`.
+    pub fn total_cmp(&self, rhs: &Self) -> Ordering {
+        // See f32::total_cmp or f64::total_cmp in `core` for explanation.
+        let mut left = self.to_bits() as i128;
+        let mut right = rhs.to_bits() as i128;
+
+        left ^= (((left >> 127) as u128) >> 1) as i128;
+        right ^= (((right >> 127) as u128) >> 1) as i128;
+
+        left.cmp(&right)
+    }
 }
 
 impl Neg for f128 {
