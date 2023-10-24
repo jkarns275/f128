@@ -1,5 +1,4 @@
 use std::ffi::CString;
-use std::ffi::NulError;
 use std::mem;
 use std::str;
 
@@ -74,7 +73,7 @@ impl f128 {
         0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00,
     ]);
-    
+
     #[cfg(target_endian = "big")]
     pub const MIN_POSITIVE_NORMAL: f128 = f128([
         0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -227,10 +226,24 @@ impl f128 {
         self.0
     }
 
-    pub fn parse<T: AsRef<str>>(s: T) -> Result<Self, NulError> {
-        let cstr = CString::new(s.as_ref())?;
+    pub fn parse<T: AsRef<str>>(s: T) -> Result<Self, ParseF128Error> {
+        let s = s.as_ref();
+        let len = s.len();
+        if len == 0 {
+            return Err(pf128_empty());
+        }
+        let cstr = CString::new(s)
+            .or(Err(pf128_invalid()))?;
+        let mut end: *const i8 = std::ptr::null();
 
-        Ok(unsafe { strtoflt128_f(cstr.as_ptr()) })
+        let f;
+        unsafe {
+            f = strtoflt128_f(cstr.as_ptr(), &mut end);
+            if end != cstr.as_ptr().offset(len as isize) {
+                return Err(pf128_invalid())
+            }
+        }
+        Ok(f)
     }
 
     pub fn exp_bits(&self) -> u32 {
@@ -244,5 +257,40 @@ impl f128 {
 
     pub fn bitwise_eq(self, other: Self) -> bool {
         self.0 == other.0
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ParseF128Error {
+    kind: F128ErrorKind,
+}
+
+const fn pf128_empty() -> ParseF128Error {
+    ParseF128Error { kind: F128ErrorKind::Empty }
+}
+const fn pf128_invalid() -> ParseF128Error {
+    ParseF128Error { kind: F128ErrorKind::Invalid }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum F128ErrorKind {
+    Empty,
+    Invalid,
+}
+impl std::fmt::Display for ParseF128Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self.kind {
+            F128ErrorKind::Empty => f.write_str("cannot parse f128 from empty string"),
+            F128ErrorKind::Invalid => f.write_str("invalid f128 literal"),
+        }
+    }
+}
+impl std::error::Error for ParseF128Error {}
+
+impl std::str::FromStr for f128 {
+    type Err = ParseF128Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        f128::parse(s)
     }
 }

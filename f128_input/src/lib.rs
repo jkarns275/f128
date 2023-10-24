@@ -14,7 +14,7 @@ fn parse(s: &str) -> String {
                 "unsafe {{ ::std::mem::transmute::<[u8; 16], f128>({:?}) }}",
                 it.into_inner()
             ),
-        Err(_) => panic!(format!("'{:?}' is not a valid f128", s)),
+        Err(_) => panic!("'{:?}' is not a valid f128", s),
     }
 }
 

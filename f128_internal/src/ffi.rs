@@ -15,7 +15,7 @@ extern "C" {
 
     pub fn qtostr(s: *mut u8, size: usize, fmt: *const i8, arg: f128) -> c_int;
 
-    pub fn strtoflt128_f(c: *const i8) -> f128;
+    pub fn strtoflt128_f(c: *const i8, end: *mut *const i8) -> f128;
 
     pub(crate) fn usize_to_f128(x: usize) -> f128;
     pub(crate) fn f128_to_usize(x: f128) -> usize;
