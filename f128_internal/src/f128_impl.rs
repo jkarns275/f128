@@ -23,13 +23,13 @@ impl fmt::Debug for f128 {
 
 impl fmt::Display for f128 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let format = 
+        let format =
             if let Some(precision) = f.precision() {
                 format!("%.{}Qg", precision)
             } else {
                 "%Qg".to_string()
             };
-        
+
         match self.to_string_fmt(format.as_str()) {
             Some(s) => write!(f, "{}", s),
             None => Err(fmt::Error),
@@ -156,7 +156,7 @@ impl NumCast for f128 {
     }
 }
 
-impl FloatConst for f128 { 
+impl FloatConst for f128 {
     #[cfg(target_endian = "little")]
     fn E() -> f128 { f128([0x7A, 0x4E, 0x40, 0xAC, 0xB8, 0x5F, 0x35, 0x95, 0x76, 0x45, 0xB1, 0xA8, 0xF0, 0x5B, 0x00, 0x40]) }
     #[cfg(target_endian = "big")]
@@ -916,3 +916,8 @@ impl PartialEq for f128 {
         unsafe { neqq(*self, *other) != 0 }
     }
 }
+
+#[cfg(feature = "bytemuck")]
+unsafe impl bytemuck::Zeroable for f128 {}
+#[cfg(feature = "bytemuck")]
+unsafe impl bytemuck::Pod for f128 {}

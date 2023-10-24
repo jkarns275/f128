@@ -6,6 +6,9 @@ license = "MIT"
 description = "Bindings to the gcc quadmath library"
 repository = "https://github.com/jkarns275/f128"
 
+[features]
+bytemuck = ["f128_internal/bytemuck"]
+
 [dependencies]
 num-traits = "0.2.6"
 libc = "0.2"
