@@ -1,4 +1,3 @@
-# f128
-Bindings to GCC's __float128 type.
+Rust now natively supports f128 with an experimental nightly feature: https://doc.rust-lang.org/nightly/std/primitive.f128.html
 
-This crate is currently in maintenance mode. Feel free to open a pull request, or email josh@mail.rit.edu if you have any issues. 
+This crate should therefore be avoided as it is incomplete and suffers from some performance / linking issues.
